@@ -12,6 +12,7 @@ interface MetricProps {
   isAuthor?: boolean
 }
 
+// All composed with an image and paragraph
 const Metric = ({
   imgUrl,
   alt,

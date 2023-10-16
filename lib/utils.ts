@@ -1,11 +1,11 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
- 
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const getTimestamp = (createdAt:Date) : string => {
+export const getTimestamp = (createdAt: Date): string => {
   const now = new Date()
   const diffMilliseconds = now.getTime() - createdAt.getTime()
 
@@ -32,4 +32,17 @@ export const getTimestamp = (createdAt:Date) : string => {
   }
 
   return result
+}
+
+export function formatNumber(number: number | string): string {
+  const symbols = ["", "K", "M", "B", "T"] // Add more symbols for larger numbers if needed
+  const tier = (Math.log10(Math.abs(Number(number))) / 3) | 0
+
+  if (tier === 0) return String(number)
+
+  const suffix = symbols[tier]
+  const scale = Math.pow(10, tier * 3)
+  const scaled = Number(number) / scale
+
+  return `${scaled.toFixed(1)}${suffix}`
 }

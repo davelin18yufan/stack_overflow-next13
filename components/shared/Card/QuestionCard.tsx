@@ -2,7 +2,7 @@ import React from "react"
 import RenderTag from "../RenderTag"
 import Link from "next/link"
 import Metric from "../Metric"
-import { getTimestamp } from "@/lib/utils"
+import { formatNumber, getTimestamp } from "@/lib/utils"
 
 interface QuestionProps {
   _id: string
@@ -55,6 +55,7 @@ const QuestionCard = ({
       </div>
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
+        {/* question author */}
         <Metric
           imgUrl="/assets/icons/avatar.svg"
           value={author.name}
@@ -64,27 +65,31 @@ const QuestionCard = ({
           textStyles="body-medium text-dark400_light700"
         />
 
-        <Metric
-          imgUrl="/assets/icons/like.svg"
-          value={upVotes}
-          alt="Upvotes"
-          title="Votes"
-          textStyles="small-medium text-dark400_light800"
-        />
-        <Metric
-          imgUrl="/assets/icons/message.svg"
-          value={answers.length}
-          alt="Message"
-          title="Answers"
-          textStyles="small-medium text-dark400_light800"
-        />
-        <Metric
-          imgUrl="/assets/icons/eye.svg"
-          value={views}
-          alt="eye"
-          title="Views"
-          textStyles="small-medium text-dark400_light800"
-        />
+        {/* likes, answer, views */}
+        <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">
+          <Metric
+            imgUrl="/assets/icons/like.svg"
+            value={formatNumber(upVotes)}
+            alt="UpVotes"
+            title="Votes"
+            textStyles="small-medium text-dark400_light800"
+          />
+          <Metric
+            imgUrl="/assets/icons/message.svg"
+            value={formatNumber(answers.length)}
+            alt="Message"
+            title="Answers"
+            textStyles="small-medium text-dark400_light800"
+          />
+          <Metric
+            imgUrl="/assets/icons/eye.svg"
+            value={formatNumber(views)}
+            alt="eye"
+            title="Views"
+            textStyles="small-medium text-dark400_light800"
+          />
+        </div>
+        
       </div>
     </div>
   )
