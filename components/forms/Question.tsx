@@ -1,5 +1,7 @@
 "use client"
 
+import React, { useRef } from "react"
+import { Editor } from "@tinymce/tinymce-react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,13 +19,15 @@ import { Input } from "../ui/input"
 import { QuestionSchema } from "@/lib/validations"
 
 const Question = () => {
+  const editorRef = useRef(null)
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
       title: "",
       explanation: "",
-      tags: []
+      tags: [],
     },
   })
 
@@ -56,7 +60,7 @@ const Question = () => {
                 />
               </FormControl>
 
-              <FormDescription className="body-regular mt-2.5 text-light-500">
+              <FormDescription className="text-[0.8rem] dark:text-slate-400 body-regular mt-2.5 text-light-500">
                 Be specific and imagine you're asking a question to another
                 person.
               </FormDescription>
@@ -72,15 +76,52 @@ const Question = () => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Detail explanation of your question<span className="text-primary-500">*</span>
+                Detail explanation of your question
+                <span className="text-primary-500">*</span>
               </FormLabel>
 
               <FormControl className="mt-3.5">
-                {/* TODO: Add an EDITOR component */}
+                <Editor
+                  apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                  // NEXT_PUBLIC_TINY_EDITOR_API_KEY=x1jrytf10rrg0rfuxbu74wxpd3tq3on0hhok91jv1t2smhhn
+                  onInit={(evt, editor) => {
+                    // @ts-ignore
+                    (editorRef.current = editor)
+                  }}
+                  initialValue=""
+                  init={{
+                    height: 350,
+                    menubar: false,
+                    plugins: [
+                      "advlist",
+                      "autolink",
+                      "lists",
+                      "link",
+                      "image",
+                      "charmap",
+                      "preview",
+                      "anchor",
+                      "searchreplace",
+                      "visualblocks",
+                      "codesample",
+                      "fullscreen",
+                      "insertdatetime",
+                      "media",
+                      "table",
+                    ],
+                    toolbar:
+                      "undo redo | " +
+                      "codesample | bold italic forecolor | alignleft aligncenter |" +
+                      "alignright alignjustify | bullist numlist" ,
+                    content_style:
+                      "body { font-family:Inter; font-size:16px }",
+                  }}
+                />
               </FormControl>
 
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Introduce the problem and expand on what you put in the title. Minimum 20 characters.
+                Introduce the problem and expand on what you put in the title.
+                Minimum 20 characters.
               </FormDescription>
 
               {/* error msg */}
@@ -106,7 +147,8 @@ const Question = () => {
               </FormControl>
 
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Add up to 3 tags to describe what your question is about. You need to press enter to add a tag.
+                Add up to 3 tags to describe what your question is about. You
+                need to press enter to add a tag.
               </FormDescription>
 
               {/* error msg */}

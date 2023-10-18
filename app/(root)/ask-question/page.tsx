@@ -3,11 +3,11 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className="h1-bold text-dark100-light900"> 
-      <h1>Ask a Question</h1>
-      
+    <div className="mx-auto w-full max-w-5xl">
+      <h1 className="h1-bold text-dark100-light900">Ask a Question</h1>
+
       <div className="mt-9">
-        <Question/>
+        <Question />
       </div>
     </div>
   )
