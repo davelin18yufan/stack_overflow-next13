@@ -101,7 +101,7 @@ const Question = () => {
         className="flex w-full flex-col gap-10"
       >
         <FormField
-          control={form.control}
+          control={form.control} // This object contains methods for registering components, and for internal props passing only, no access
           name="title"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
