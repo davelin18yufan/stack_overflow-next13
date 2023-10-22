@@ -20,12 +20,19 @@ import { QuestionSchema } from "@/lib/validations"
 import { Badge } from "../ui/badge"
 import Image from "next/image"
 import { createQuestion } from "@/lib/actions/question.action"
+import { usePathname, useRouter } from "next/navigation"
 
-const type:any = "create"
+interface Props {
+  mongoUserId: string
+}
 
-const Question = () => {
+const type: any = "create"
+
+const Question = ({ mongoUserId }: Props) => {
   const editorRef = useRef(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({
@@ -42,18 +49,24 @@ const Question = () => {
     // ✅ This will be type-safe and validated.
     setIsSubmitting(true)
 
-    try{
+    try {
       // make an async call to your API --> create a question
       // contain all form data
 
-      await createQuestion({})
-      // naviagate to home page
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+        path: pathname
+      })
 
-    }catch(error){
-
-    }finally{
-
-  
+      // navigate to home page
+      router.push("/")
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -141,7 +154,6 @@ const Question = () => {
               <FormControl className="mt-3.5">
                 <Editor
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
-                  // NEXT_PUBLIC_TINY_EDITOR_API_KEY=x1jrytf10rrg0rfuxbu74wxpd3tq3on0hhok91jv1t2smhhn
                   onInit={(evt, editor) => {
                     // @ts-ignore
                     editorRef.current = editor
