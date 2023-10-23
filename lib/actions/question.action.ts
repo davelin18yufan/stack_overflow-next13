@@ -11,9 +11,9 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase()
     const questions = await Question.find({})
-      .populate({ path: "tags", model: Tag })
+      .populate({ path: "tags", model: Tag }) // Specifies paths which should be populated with other documents
       .populate({ path: "author", model: User })
-      .sort({createdAt: -1})
+      .sort({ createdAt: -1 })
 
     return { questions }
   } catch (error) {

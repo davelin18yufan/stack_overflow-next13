@@ -46,19 +46,15 @@ const Question = ({ mongoUserId }: Props) => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof QuestionSchema>) {
-    // ✅ This will be type-safe and validated.
     setIsSubmitting(true)
 
     try {
-      // make an async call to your API --> create a question
-      // contain all form data
-
       await createQuestion({
         title: values.title,
         content: values.explanation,
         tags: values.tags,
         author: JSON.parse(mongoUserId),
-        path: pathname
+        path: pathname // for revalidation 
       })
 
       // navigate to home page
@@ -89,7 +85,7 @@ const Question = ({ mongoUserId }: Props) => {
           })
         }
 
-        // check the tag is not existed already within field
+        // check the tag if is existed already within field
         if (!field.value.includes(tagValue as never)) {
           form.setValue("tags", [...field.value, tagValue])
           // reset
@@ -220,7 +216,7 @@ const Question = ({ mongoUserId }: Props) => {
 
                   {field.value.length > 0 && (
                     <div className="flex-start mt-2.5 gap-2.5">
-                      {field.value.map((tag: any) => (
+                      {field.value.map((tag: string) => (
                         <Badge
                           key={tag}
                           className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
