@@ -3,6 +3,8 @@
 import User from "@/database/user.model"
 import { connectToDatabase } from "../mongoose"
 import {
+  GetAllUsersParams,
+  GetUserByIdParams,
   CreateUserParams,
   DeleteUserParams,
   UpdateUserParams,
@@ -10,7 +12,19 @@ import {
 import { revalidatePath } from "next/cache"
 import Question from "@/database/question.model"
 
-export async function getUserById(params: any) {
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    await connectToDatabase()
+
+    const users = await User.find({})
+    return users
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getUserById(params: GetUserByIdParams) {
   try {
     await connectToDatabase()
 

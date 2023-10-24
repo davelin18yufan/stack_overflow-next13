@@ -21,7 +21,7 @@ interface FilterProps {
 
 const Filter = ({ filters, otherClasses, containerClasses }: FilterProps) => {
   return (
-    <div className={`relative md:hidden ${otherClasses}`}>
+    <div className={`relative ${containerClasses}`}>
       <Select>
         <SelectTrigger
           className={`${otherClasses} body-regular light-border background-light800_dark300 text-dark500_light700 border px-5 py-2.5`}
@@ -41,7 +41,7 @@ const Filter = ({ filters, otherClasses, containerClasses }: FilterProps) => {
         </SelectContent>
       </Select>
     </div>
-  );
+  )
 };
 
 export default Filter;
