@@ -21,6 +21,7 @@ import { Badge } from "../ui/badge"
 import Image from "next/image"
 import { createQuestion } from "@/lib/actions/question.action"
 import { usePathname, useRouter } from "next/navigation"
+import useTheme from "@/context/ThemeProvider"
 
 interface Props {
   mongoUserId: string
@@ -30,6 +31,7 @@ const type: any = "create"
 
 const Question = ({ mongoUserId }: Props) => {
   const editorRef = useRef(null)
+  const { mode } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -54,7 +56,7 @@ const Question = ({ mongoUserId }: Props) => {
         content: values.explanation,
         tags: values.tags,
         author: JSON.parse(mongoUserId),
-        path: pathname // for revalidation 
+        path: pathname, // for revalidation
       })
 
       // navigate to home page
@@ -182,6 +184,8 @@ const Question = ({ mongoUserId }: Props) => {
                       "codesample | bold italic forecolor | alignleft aligncenter " +
                       "alignright alignjustify | bullist numlist",
                     content_style: "body { font-family:Inter; font-size:16px }",
+                    skin: mode === "dark" ? "oxide-dark" : "oxide",
+                    content_css: mode === "dark" ? "dark" : "light",
                   }}
                 />
               </FormControl>
