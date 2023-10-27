@@ -16,29 +16,61 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import useTheme from "@/context/ThemeProvider"
 import { Button } from "../ui/button"
 import Image from "next/image"
+import { createAnswer } from "@/lib/actions/answer.action"
+import { usePathname } from "next/navigation"
 
-const Answer = () => {
+interface Props {
+  question: string
+  questionId: string
+  authorId: string
+}
+
+const Answer = ({question, questionId, authorId}:Props) => {
   const editorRef = useRef(null)
   const { mode } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const pathname = usePathname()
 
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: {
-      answer: ""
-    }
+      answer: "",
+    },
   })
 
-  const handleCreateAnswer = (data) => {
+  const handleCreateAnswer = async (values: z.infer<typeof AnswerSchema>) => {
+    setIsSubmitting(true)
 
+    try {
+      await createAnswer({
+        content: values.answer,
+        author: JSON.parse(authorId),
+        question: JSON.parse(questionId),
+        path: pathname
+      })
+
+      form.reset()
+
+      if(editorRef.current){
+        const editor = editorRef.current as any
+
+        editor.setContent("")
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
     <div>
       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
-        <h4 className="paragraph-semibold text-dark400_light800">Write your answer here</h4>
+        <h4 className="paragraph-semibold text-dark400_light800">
+          Write your answer here
+        </h4>
 
-        <Button 
+        <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
           onClick={() => {}}
         >
@@ -49,7 +81,7 @@ const Answer = () => {
             height={12}
             className="object-contain"
           />
-          Generate an AI answer
+          Generate an AI Answer
         </Button>
       </div>
       <Form {...form}>
@@ -112,7 +144,7 @@ const Answer = () => {
           <div className="flex justify-end">
             <Button
               className="primary-gradient w-fit text-white"
-              type="button"
+              type="submit"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Submitting..." : "Submit"}
