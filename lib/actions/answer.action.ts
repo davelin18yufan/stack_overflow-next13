@@ -43,7 +43,7 @@ export async function getAnswers(params: GetAnswersParams) {
       })
       .sort({ createdAt: -1 })
 
-    return answers
+    return { answers }
   } catch (error) {
     console.log(error)
     throw error
