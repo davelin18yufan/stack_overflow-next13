@@ -1,7 +1,11 @@
 "use server"
 
 import Answer from "@/database/answer.model"
-import { CreateAnswerParams, GetAnswersParams } from "@/types/shared"
+import {
+  AnswerVoteParams,
+  CreateAnswerParams,
+  GetAnswersParams,
+} from "@/types/shared"
 import { connectToDatabase } from "../mongoose"
 import { revalidatePath } from "next/cache"
 import Question from "@/database/question.model"
@@ -44,6 +48,74 @@ export async function getAnswers(params: GetAnswersParams) {
       .sort({ createdAt: -1 })
 
     return { answers }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function upVoteAnswer(params: AnswerVoteParams) {
+  try {
+    connectToDatabase()
+
+    const { answerId, userId, hasupVoted, hasdownVoted, path } = params
+
+    let updateQuery = {}
+
+    if (hasupVoted) {
+      updateQuery = { $pull: { upVotes: userId } }
+    } else if (hasdownVoted) {
+      updateQuery = {
+        $pull: { downVotes: userId },
+        $push: { upVotes: userId },
+      }
+    } else {
+      updateQuery = { $addToSet: { upVotes: userId } }
+    }
+
+    const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, {
+      new: true,
+    })
+
+    if (!answer) throw new Error("Answer not found")
+
+    // TODO: interaction
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function downVoteAnswer(params: AnswerVoteParams) {
+  try {
+    connectToDatabase()
+
+    const { answerId, userId, hasupVoted, hasdownVoted, path } = params
+
+    let updateQuery = {}
+
+    if (hasdownVoted) {
+      updateQuery = { $pull: { downVotes: userId } }
+    } else if (hasupVoted) {
+      updateQuery = {
+        $pull: { upVotes: userId },
+        $push: { downVotes: userId },
+      }
+    } else {
+      updateQuery = { $addToSet: { downVotes: userId } }
+    }
+
+    const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, {
+      new: true,
+    })
+
+    if (!answer) throw new Error("Answer not found")
+
+    // TODO: interaction
+
+    revalidatePath(path)
   } catch (error) {
     console.log(error)
     throw error

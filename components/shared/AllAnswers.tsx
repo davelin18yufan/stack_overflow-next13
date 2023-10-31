@@ -60,9 +60,9 @@ const AllAnswers = async ({
               </Link>
               <div className="flex justify-end">
                 <Votes
-                  type="answer"
+                  type="Answer"
                   itemId={JSON.stringify(answer._id)}
-                  userId={userId}
+                  userId={JSON.stringify(userId)}
                   upVotes={answer.upVotes.length}
                   downVotes={answer.downVotes.length}
                   hasUpVoted={answer.upVotes.includes(userId)}

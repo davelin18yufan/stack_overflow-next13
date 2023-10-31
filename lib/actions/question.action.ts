@@ -8,6 +8,8 @@ import {
   CreateQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
+  ToggleSaveQuestionParams,
+  QuestionVoteParams,
 } from "@/types/shared"
 import { revalidatePath } from "next/cache"
 
@@ -33,10 +35,14 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
     const { questionId } = params
 
     const question = await Question.findById(questionId)
-      .populate({ path: "tags", model: Tag, select: '_id name' })
-      .populate({ path: "author", model: User, select: '_id name clerkId picture' })
+      .populate({ path: "tags", model: Tag, select: "_id name" })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id name clerkId picture",
+      })
 
-    return question 
+    return question
   } catch (error) {
     console.log(error)
     throw error
@@ -83,5 +89,113 @@ export async function createQuestion(params: CreateQuestionParams) {
     revalidatePath(path)
   } catch (error) {
     console.log(error)
+  }
+}
+
+export async function upVoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase()
+
+    const { questionId, userId, hasupVoted, hasdownVoted, path } = params
+
+    let updateQuery = {}
+
+    if (hasupVoted) {
+      updateQuery = { $pull: { upVotes: userId } }
+    } else if (hasdownVoted) {
+      updateQuery = {
+        $pull: { downVotes: userId },
+        $push: { upVotes: userId },
+      }
+    } else {
+      // Adds values to the array if not already present.
+      updateQuery = { $addToSet: { upVotes: userId } }
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
+      new: true,
+    })
+
+    if (!question) throw new Error("Question not found!")
+
+    // TODO: interaction
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function downVoteQuestion(params: QuestionVoteParams) {
+  try {
+    connectToDatabase()
+
+    const { questionId, userId, hasupVoted, hasdownVoted, path } = params
+
+    let updateQuery = {}
+
+    if (hasdownVoted) {
+      updateQuery = { $pull: { downVotes: userId } }
+    } else if (hasupVoted) {
+      updateQuery = {
+        $pull: { upVotes: userId },
+        $push: { downVotes: userId },
+      }
+    } else {
+      updateQuery = { $addToSet: { downVotes: userId } }
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
+      new: true,
+    })
+
+    if (!question) throw new Error("Question not found!")
+
+    // TODO: interaction
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
+  try {
+    connectToDatabase()
+
+    const { userId, questionId, path } = params
+
+    const user = await User.findById(userId)
+
+    if (!user) throw new Error("User not found!")
+
+    const isQuestionSaved = user.postSaved.includes(questionId)
+
+    if (isQuestionSaved) {
+      // remove question from saved
+      await User.findByIdAndUpdate(
+        userId,
+        {
+          $pull: { postSaved: questionId },
+        },
+        { new: true }
+      )
+    } else {
+      // add question to saved
+      await User.findByIdAndUpdate(
+        userId,
+        {
+          $addToSet: { postSaved: questionId },
+        },
+        { new: true }
+      )
+    }
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
   }
 }
