@@ -16,7 +16,7 @@ interface QuestionProps {
     name: string
     picture: string
   }
-  upVotes: number
+  upVotes: string[]
   views: number
   answers: Array<object>
   createdAt: Date
@@ -69,7 +69,7 @@ const QuestionCard = ({
         <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">
           <Metric
             imgUrl="/assets/icons/like.svg"
-            value={formatNumber(upVotes)}
+            value={formatNumber(upVotes.length)}
             alt="UpVotes"
             title="Votes"
             textStyles="small-medium text-dark400_light800"
