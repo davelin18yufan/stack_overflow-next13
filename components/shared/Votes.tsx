@@ -35,7 +35,6 @@ const Votes = async ({
 }: Props) => {
   const pathname = usePathname()
   const router = useRouter()
-  console.log({ router })
 
   const handleSave = async () => {
     await toggleSaveQuestion({
