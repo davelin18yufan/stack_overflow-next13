@@ -7,6 +7,7 @@ import Question from "@/database/question.model"
 import {
   CreateQuestionParams,
   GetQuestionByIdParams,
+  GetQuestionsByTagIdParams,
   GetQuestionsParams,
   ToggleSaveQuestionParams,
   QuestionVoteParams,
@@ -70,10 +71,11 @@ export async function createQuestion(params: CreateQuestionParams) {
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
         {
-          name: { $regex: new RegExp(`^${tag}$,"i"`) },
+          name: { $regex: new RegExp(`^${tag}$`,"i") },
         },
         {
-          $setOnInsert: { name: tag, $push: { question: question._id } }, // do update if target found
+          $setOnInsert: { name: tag }, // do update if target found
+          $push: { questions: question._id },
         },
         {
           upsert: true, // upsert if target not found
@@ -224,11 +226,12 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       ],
     })
 
-    if(!user) throw new Error("User not found")
-    
+    if (!user) throw new Error("User not found")
+
     return { questions: user.postSaved }
   } catch (error) {
     console.log(error)
     throw error
   }
 }
+
