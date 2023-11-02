@@ -8,6 +8,7 @@ import {
   CreateUserParams,
   DeleteUserParams,
   UpdateUserParams,
+  GetUserStatsParams,
 } from "@/types/shared"
 import { revalidatePath } from "next/cache"
 import Question from "@/database/question.model"
@@ -117,3 +118,48 @@ export async function getUserInfo(params:GetUserByIdParams){
     throw error
   }
 }
+
+export async function getUserQuestions(params: GetUserStatsParams){
+  try {
+    connectToDatabase()
+
+    const {userId, page = 1, pageSize = 10} = params
+
+    const totalQuestions = await Question.countDocuments({ author: userId }) // count where author=userId
+    const totalAnswers = await Answer.countDocuments({ author: userId })
+
+    const userQuestions = await Question.find({author: userId})
+      .sort({views : -1, upVotes: -1})
+      .skip((page-1)*pageSize)
+      .limit(pageSize)
+      .populate('tags', '_id name')
+      .populate('author', '_id name clerkId picture')
+
+
+    return {questions: userQuestions, totalAnswers, totalQuestions}
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getUserAnswers(params:GetUserStatsParams){
+  try {
+    connectToDatabase()
+
+    const { userId, page = 1, pageSize = 10} = params
+
+    const userAnswers = await Answer.find({author: userId})
+      .sort({votes: -1})
+      .skip((page -1)*pageSize)
+      .limit(pageSize)
+      .populate('author', '_id name clerkId picture')
+      .populate('question', 'title _id createdAt author')
+
+    return {answers: userAnswers}
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+

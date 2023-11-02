@@ -10,7 +10,7 @@ import { getJoinedDate } from "@/lib/utils"
 import ProfileLink from "@/components/shared/ProfileLink"
 import Stats from "@/components/shared/Stats"
 import QuestionTab from "@/components/shared/QuestionTab"
-
+import AnswersTab from "@/components/shared/AnswersTab"
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const userInfo = await getUserInfo({ userId: params.id })
@@ -99,10 +99,18 @@ const Page = async ({ params, searchParams }: URLProps) => {
             value="top-posts"
             className="mt-5 flex w-full flex-col gap-6"
           >
-            <QuestionTab />
+            <QuestionTab
+              searchParams={searchParams}
+              clerkId={clerkId}
+              userId={userInfo.user._id}
+            />
           </TabsContent>
           <TabsContent value="answers" className="flex w-full flex-col gap-6">
-            Answers
+            <AnswersTab
+              searchParams={searchParams}
+              clerkId={clerkId}
+              userId={userInfo.user._id}
+            />
           </TabsContent>
         </Tabs>
       </div>

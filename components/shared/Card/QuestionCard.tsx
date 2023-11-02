@@ -6,6 +6,7 @@ import { formatNumber, getTimestamp } from "@/lib/utils"
 
 interface QuestionProps {
   _id: string
+  clerkId?:string | null
   title: string
   tags: {
     _id: string
@@ -24,6 +25,7 @@ interface QuestionProps {
 
 const QuestionCard = ({
   _id,
+  clerkId,
   title,
   tags,
   author,
