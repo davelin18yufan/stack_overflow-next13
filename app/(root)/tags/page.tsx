@@ -6,7 +6,7 @@ import { getAllTags } from "@/lib/actions/tag.action"
 import NoResult from "@/components/shared/NoResult"
 import Link from "next/link"
 
-const page = async () => {
+const Page = async () => {
   const result = await getAllTags({})
 
   return (
@@ -69,4 +69,4 @@ const page = async () => {
   )
 }
 
-export default page
+export default Page

@@ -89,7 +89,6 @@ const QuestionCard = ({
             textStyles="small-medium text-dark400_light800"
           />
         </div>
-        
       </div>
     </div>
   )

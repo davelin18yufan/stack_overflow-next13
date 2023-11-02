@@ -11,6 +11,7 @@ import {
 } from "@/types/shared"
 import { revalidatePath } from "next/cache"
 import Question from "@/database/question.model"
+import Answer from "@/database/answer.model"
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
@@ -89,6 +90,28 @@ export async function deleteUser(params: DeleteUserParams) {
 
     const deleteUser = await User.findByIdAndDelete(user._id)
     return deleteUser
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getUserInfo(params:GetUserByIdParams){
+  try {
+    connectToDatabase()
+
+    const {userId} = params
+
+    const user = await User.findOne({clerkId: userId})
+
+    if(!user) throw new Error('User not found')
+
+    const totalQuestions = await Question.countDocuments({ author : user._id}) // count where author=userId
+    const totalAnswers = await Answer.countDocuments({author: user._id})
+
+    return {
+      user, totalAnswers, totalQuestions
+    }
   } catch (error) {
     console.log(error)
     throw error
