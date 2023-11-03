@@ -7,14 +7,17 @@ import Question from "@/database/question.model"
 import {
   CreateQuestionParams,
   GetQuestionByIdParams,
-  GetQuestionsByTagIdParams,
   GetQuestionsParams,
   ToggleSaveQuestionParams,
   QuestionVoteParams,
   GetSavedQuestionsParams,
+  EditQuestionParams,
+  DeleteQuestionParams,
 } from "@/types/shared"
 import { revalidatePath } from "next/cache"
 import { FilterQuery } from "mongoose"
+import Answer from "@/database/answer.model"
+import Interaction from "@/database/interaction.model"
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -235,3 +238,41 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   }
 }
 
+export async function deleteQuestion(params: DeleteQuestionParams){
+  try {
+    connectToDatabase()
+
+    const {questionId, path} = params
+
+    // delete question/answers/interactivity/tags associate with question
+    await Question.deleteOne({_id: questionId})
+    await Answer.deleteMany({question: questionId})
+    await Interaction.deleteMany({question: questionId})
+    await Tag.updateMany({questions: questionId}, {$pull: {questions: questionId}})
+
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function editQuestion(params:EditQuestionParams){
+  try {
+    connectToDatabase()
+
+    const {questionId, title, content, path} = params
+
+    const question = await Question.findById(questionId)
+
+    question.title = title
+    question.content = content
+
+    question.save()
+
+    return question
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}

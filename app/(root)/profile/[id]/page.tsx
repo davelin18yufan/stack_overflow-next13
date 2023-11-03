@@ -4,8 +4,9 @@ import { URLProps } from "@/types"
 import { SignedIn, auth } from "@clerk/nextjs"
 import Image from "next/image"
 import Link from "next/link"
-import React from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+import React from "react"
 import { getJoinedDate } from "@/lib/utils"
 import ProfileLink from "@/components/shared/ProfileLink"
 import Stats from "@/components/shared/Stats"
@@ -13,8 +14,8 @@ import QuestionTab from "@/components/shared/QuestionTab"
 import AnswersTab from "@/components/shared/AnswersTab"
 
 const Page = async ({ params, searchParams }: URLProps) => {
-  const userInfo = await getUserInfo({ userId: params.id })
   const { userId: clerkId } = auth()
+  const userInfo = await getUserInfo({ userId: params.id })
 
   return (
     <>
@@ -79,7 +80,6 @@ const Page = async ({ params, searchParams }: URLProps) => {
         </div>
       </div>
 
-      {/* Stats */}
       <Stats
         totalQuestions={userInfo.totalQuestions}
         totalAnswers={userInfo.totalAnswers}
@@ -95,21 +95,18 @@ const Page = async ({ params, searchParams }: URLProps) => {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent
-            value="top-posts"
-            className="mt-5 flex w-full flex-col gap-6"
-          >
+          <TabsContent value="top-posts">
             <QuestionTab
               searchParams={searchParams}
-              clerkId={clerkId}
               userId={userInfo.user._id}
+              clerkId={clerkId}
             />
           </TabsContent>
           <TabsContent value="answers" className="flex w-full flex-col gap-6">
             <AnswersTab
               searchParams={searchParams}
-              clerkId={clerkId}
               userId={userInfo.user._id}
+              clerkId={clerkId}
             />
           </TabsContent>
         </Tabs>

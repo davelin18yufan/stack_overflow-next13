@@ -127,17 +127,16 @@ export async function getUserQuestions(params: GetUserStatsParams){
     const {userId, page = 1, pageSize = 10} = params
 
     const totalQuestions = await Question.countDocuments({ author: userId }) // count where author=userId
-    const totalAnswers = await Answer.countDocuments({ author: userId })
 
     const userQuestions = await Question.find({ author: userId })
       .sort({ createdAt: -1, views: -1, upVotes: -1 })
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .populate("tags", "_id name")
+      .populate({path:"tags", model: Tag, select:"_id name"})
       .populate("author", "_id name clerkId picture")
 
 
-    return {questions: userQuestions, totalAnswers, totalQuestions}
+    return {questions: userQuestions, totalQuestions}
   } catch (error) {
     console.log(error)
     throw error
