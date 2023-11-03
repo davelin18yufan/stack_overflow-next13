@@ -25,9 +25,9 @@ export const UserSchema = new Schema<IUser>({
   bio: { type: String },
   portfolioWebsite: { type: String },
   reputation: { type: Number, default : 0 },
-  joinedAt: { type: Date, default: Date.now() },
+  joinedAt: { type: Date, default: Date.now },
   postSaved: [{ type: Schema.Types.ObjectId, ref: "Question" }],
 })
 
-const User = models.User || model<IUser>("User", UserSchema)
+const User = models.User || model("User", UserSchema)
 export default User

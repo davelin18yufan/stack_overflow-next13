@@ -22,7 +22,7 @@ const EditDeleteAction = async ({ itemId, type }: Props) => {
     if (type === "Question") {
       await deleteQuestion({ questionId: JSON.parse(itemId), path: pathname })
     }else if(type === "Answer"){
-      await deleteAnswer({answerId: itemId, path:pathname})
+      await deleteAnswer({ answerId: JSON.parse(itemId), path: pathname })
     }
   }
   return (

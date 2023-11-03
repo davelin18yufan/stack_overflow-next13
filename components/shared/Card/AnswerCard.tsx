@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Metric from "@/components/shared/Metric"
+import Metric from "../Metric"
 import { formatNumber, getTimestamp } from "@/lib/utils"
 import { SignedIn } from "@clerk/nextjs"
 import EditDeleteAction from "../EditDeleteAction"
@@ -30,7 +30,7 @@ const AnswerCard = ({
   createdAt,
 }: Props) => {
   const showActionButtons = clerkId && clerkId === author.clerkId
-
+  
   return (
     <Link
       href={`/question/${question._id}/#${_id}`}
