@@ -13,6 +13,7 @@ import {
 import { revalidatePath } from "next/cache"
 import Question from "@/database/question.model"
 import Answer from "@/database/answer.model"
+import Tag from "@/database/tag.model"
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
@@ -128,12 +129,12 @@ export async function getUserQuestions(params: GetUserStatsParams){
     const totalQuestions = await Question.countDocuments({ author: userId }) // count where author=userId
     const totalAnswers = await Answer.countDocuments({ author: userId })
 
-    const userQuestions = await Question.find({author: userId})
-      .sort({views : -1, upVotes: -1})
-      .skip((page-1)*pageSize)
+    const userQuestions = await Question.find({ author: userId })
+      .sort({ createdAt: -1, views: -1, upVotes: -1 })
+      .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .populate('tags', '_id name')
-      .populate('author', '_id name clerkId picture')
+      .populate("tags", "_id name")
+      .populate("author", "_id name clerkId picture")
 
 
     return {questions: userQuestions, totalAnswers, totalQuestions}
@@ -149,14 +150,15 @@ export async function getUserAnswers(params:GetUserStatsParams){
 
     const { userId, page = 1, pageSize = 10} = params
 
+    const totalAnswers = await Answer.countDocuments({author: userId})
     const userAnswers = await Answer.find({author: userId})
-      .sort({votes: -1})
+      .sort({upVotes: -1})
       .skip((page -1)*pageSize)
       .limit(pageSize)
       .populate('author', '_id name clerkId picture')
       .populate('question', 'title _id createdAt author')
 
-    return {answers: userAnswers}
+    return { answers: userAnswers, totalAnswers }
   } catch (error) {
     console.log(error)
     throw error
