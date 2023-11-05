@@ -274,7 +274,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
         />
         <Button
           type="submit"
-          className="primary-gradient wu-fit !text-light-900"
+          className="primary-gradient w-fit !text-light-900"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
