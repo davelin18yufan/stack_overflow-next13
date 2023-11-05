@@ -98,21 +98,23 @@ export async function deleteUser(params: DeleteUserParams) {
   }
 }
 
-export async function getUserInfo(params:GetUserByIdParams){
+export async function getUserInfo(params: GetUserByIdParams) {
   try {
     connectToDatabase()
 
-    const {userId} = params
+    const { userId } = params
 
-    const user = await User.findOne({clerkId: userId})
-   
-    if(!user) throw new Error('User not found')
+    const user = await User.findOne({ clerkId: userId })
 
-    const totalQuestions = await Question.countDocuments({ author : user._id}) // count where author=userId
-    const totalAnswers = await Answer.countDocuments({author: user._id})
+    if (!user) throw new Error("User not found")
+
+    const totalQuestions = await Question.countDocuments({ author: user._id }) // count where author=userId
+    const totalAnswers = await Answer.countDocuments({ author: user._id })
 
     return {
-      user, totalAnswers, totalQuestions
+      user,
+      totalAnswers,
+      totalQuestions,
     }
   } catch (error) {
     console.log(error)
@@ -120,11 +122,11 @@ export async function getUserInfo(params:GetUserByIdParams){
   }
 }
 
-export async function getUserQuestions(params: GetUserStatsParams){
+export async function getUserQuestions(params: GetUserStatsParams) {
   try {
     connectToDatabase()
 
-    const {userId, page = 1, pageSize = 10} = params
+    const { userId, page = 1, pageSize = 10 } = params
 
     const totalQuestions = await Question.countDocuments({ author: userId }) // count where author=userId
 
@@ -132,30 +134,29 @@ export async function getUserQuestions(params: GetUserStatsParams){
       .sort({ createdAt: -1, views: -1, upVotes: -1 })
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .populate("tags", "_id name")
+      .populate({path:'tags', model:Tag, select:'_id name'})
       .populate("author", "_id name clerkId picture")
 
-
-    return {questions: userQuestions, totalQuestions}
+    return { questions: userQuestions, totalQuestions }
   } catch (error) {
     console.log(error)
     throw error
   }
 }
 
-export async function getUserAnswers(params:GetUserStatsParams){
+export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     connectToDatabase()
 
-    const { userId, page = 1, pageSize = 10} = params
+    const { userId, page = 1, pageSize = 10 } = params
 
-    const totalAnswers = await Answer.countDocuments({author: userId})
-    const userAnswers = await Answer.find({author: userId})
-      .sort({upVotes: -1})
-      .skip((page -1)*pageSize)
+    const totalAnswers = await Answer.countDocuments({ author: userId })
+    const userAnswers = await Answer.find({ author: userId })
+      .sort({ upVotes: -1 })
+      .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .populate('author', '_id name clerkId picture')
-      .populate('question', 'title _id ')
+      .populate("author", "_id name clerkId picture")
+      .populate("question", "title _id ")
 
     return { answers: userAnswers, totalAnswers }
   } catch (error) {
@@ -163,4 +164,3 @@ export async function getUserAnswers(params:GetUserStatsParams){
     throw error
   }
 }
-

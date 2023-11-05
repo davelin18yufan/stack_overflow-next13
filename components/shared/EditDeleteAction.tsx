@@ -10,7 +10,7 @@ interface Props {
   type: string
 }
 
-const EditDeleteAction = async ({ itemId, type }: Props) => {
+const EditDeleteAction = ({ itemId, type }: Props) => {
   const pathname = usePathname()
   const router = useRouter()
 

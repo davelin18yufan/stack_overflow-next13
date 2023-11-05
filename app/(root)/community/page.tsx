@@ -1,4 +1,4 @@
-import UserCard from "@/components/shared/Card/UserCard"
+import UserCard from "@/components/cards/UserCard"
 import Filter from "@/components/shared/Filter"
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar"
 import { UserFilters } from "@/constants/filters"
@@ -31,12 +31,7 @@ const page = async () => {
       <section className="mt-12 flex flex-wrap gap-4">
         {users.length > 0 ? (
           users.map((user) => {
-            return (
-              <UserCard
-                user={user}
-                key={user._id}
-              />
-            )
+            return <UserCard user={user} key={user._id} />
           })
         ) : (
           <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">

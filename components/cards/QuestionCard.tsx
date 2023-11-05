@@ -1,9 +1,9 @@
-import RenderTag from "../RenderTag"
+import RenderTag from "../shared/RenderTag"
 import Link from "next/link"
-import Metric from "../Metric"
+import Metric from "../shared/Metric"
 import { formatNumber, getTimestamp } from "@/lib/utils"
 import { SignedIn } from "@clerk/nextjs"
-import EditDeleteAction from "../EditDeleteAction"
+import EditDeleteAction from "../shared/EditDeleteAction"
 
 interface QuestionProps {
   _id: string

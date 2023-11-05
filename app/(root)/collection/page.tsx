@@ -1,7 +1,7 @@
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar"
 import Filter from "@/components/shared/Filter"
 import { QuestionFilters } from "@/constants/filters"
-import QuestionCard from "@/components/shared/Card/QuestionCard"
+import QuestionCard from "@/components/cards/QuestionCard"
 import NoResult from "@/components/shared/NoResult"
 import { getSavedQuestions } from "@/lib/actions/question.action"
 import { auth } from "@clerk/nextjs"
