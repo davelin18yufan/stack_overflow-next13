@@ -74,7 +74,7 @@ export async function createQuestion(params: CreateQuestionParams) {
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
         {
-          name: { $regex: new RegExp(`^${tag}$`,"i") },
+          name: { $regex: new RegExp(`^${tag}$`, "i") },
         },
         {
           $setOnInsert: { name: tag }, // do update if target found
@@ -238,17 +238,20 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   }
 }
 
-export async function deleteQuestion(params: DeleteQuestionParams){
+export async function deleteQuestion(params: DeleteQuestionParams) {
   try {
     connectToDatabase()
 
-    const {questionId, path} = params
+    const { questionId, path } = params
 
     // delete question/answers/interactivity/tags associate with question
-    await Question.deleteOne({_id: questionId})
-    await Answer.deleteMany({question: questionId})
-    await Interaction.deleteMany({question: questionId})
-    await Tag.updateMany({questions: questionId}, {$pull: {questions: questionId}})
+    await Question.deleteOne({ _id: questionId })
+    await Answer.deleteMany({ question: questionId })
+    await Interaction.deleteMany({ question: questionId })
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } }
+    )
 
     revalidatePath(path)
   } catch (error) {
@@ -257,15 +260,15 @@ export async function deleteQuestion(params: DeleteQuestionParams){
   }
 }
 
-export async function editQuestion(params:EditQuestionParams){
+export async function editQuestion(params: EditQuestionParams) {
   try {
     connectToDatabase()
 
-    const {questionId, title, content, path} = params
+    const { questionId, title, content, path } = params
 
-    const question = await Question.findById(questionId).populate('tags')
+    const question = await Question.findById(questionId).populate("tags")
 
-    if(!question) throw new Error("Question not found")
+    if (!question) throw new Error("Question not found")
 
     question.title = title
     question.content = content
@@ -273,6 +276,21 @@ export async function editQuestion(params:EditQuestionParams){
     await question.save()
 
     revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export async function getHotQuestions() {
+  try {
+    connectToDatabase()
+
+    const hotQuestions = await Question.find({})
+      .sort({ views: -1, upVotes: -1 }) // descending order
+      .limit(5)
+
+    return hotQuestions
   } catch (error) {
     console.log(error)
     throw error

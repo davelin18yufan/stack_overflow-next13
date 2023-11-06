@@ -72,30 +72,6 @@ export const BADGE_CRITERIA = {
   },
 };
 
-export const hotNetworks = [
-  {
-   _id: "1",
-    title:
-      "Would it be appropriate to point out an error in another paper during a referee report?",
-  },
-  {
-   _id: "2",
-    title: "How can an airconditioning machine exist?",
-  },
-  {
-   _id: "3",
-    title: "Interrogated every time crossing UK Border as citizen",
-  },
-  {
-   _id: "4",
-    title: "WLow digit addition generator",
-  },
-  {
-    _id: "5",
-    title: "What is an example of 3 totalQuestionss that do not make up a vector?",
-  },
-];
-
 export const popularTags = [
   {
     _id: "1",
