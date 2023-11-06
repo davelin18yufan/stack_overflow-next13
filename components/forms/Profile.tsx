@@ -41,8 +41,9 @@ const Profile = ({ clerkId, user }: Props) => {
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof ProfileSchema>) => {
+   async function onSubmit(values: z.infer<typeof ProfileSchema>) {
     setIsSubmitting(true)
+    
     try {
       await updateUser({
         clerkId,
@@ -131,6 +132,7 @@ const Profile = ({ clerkId, user }: Props) => {
                       type="url"
                       className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
                       placeholder="Your portfolio URL"
+                      {...field}
                     />
                   </>
                 </FormControl>
@@ -155,6 +157,7 @@ const Profile = ({ clerkId, user }: Props) => {
                     <Input
                       className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
                       placeholder="Where are you from"
+                      {...field}
                     />
                   </>
                 </FormControl>
@@ -179,6 +182,7 @@ const Profile = ({ clerkId, user }: Props) => {
                     <Textarea
                       className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
                       placeholder="What's special about you?"
+                      {...field}
                     />
                   </>
                 </FormControl>
