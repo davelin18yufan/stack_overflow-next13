@@ -1,16 +1,17 @@
 "use client"
 
-import React, { useState } from "react";
-import Image from "next/image";
-import { Input } from "@/components/ui/input";
-import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react"
+import Image from "next/image"
+import { Input } from "@/components/ui/input"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils"
 
-interface CustomInpurProps {
-  route: string;
-  iconPosition: string;
-  imgSrc: string;
-  placeholder: string;
-  otherClasses?: string;
+interface CustomInputProps {
+  route: string
+  iconPosition: string
+  imgSrc: string
+  placeholder: string
+  otherClasses?: string
 }
 
 // though similar to GlobalSearchbar but possess different interactivity
@@ -20,12 +21,43 @@ const LocalSearchbar = ({
   imgSrc,
   placeholder,
   otherClasses,
-}: CustomInpurProps) => {
+}: CustomInputProps) => {
   const router = useRouter()
-  const pathname= usePathname()
-  const [search, setSearch] = useState("")
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  
+  const query = searchParams.get("q")
+  const [search, setSearch] = useState(query || "")
+
+  useEffect(() => {
+    // Do not send request on every change event happened
+    // fire request after specific delay => debounce
+    const delayDebounceFn = setTimeout(() => {
+      if (search) {
+        const newUrl = formUrlQuery({
+          params: searchParams.toString(), // original params in Url
+          key: "q",
+          value: search,
+        })
+
+        router.push(newUrl, {scroll: true})
+      }else {
+        // if input is cleared
+        if(pathname === route){
+          // delete query
+          const newUrl = removeKeysFromQuery({
+            params: searchParams.toString(),
+            keysToRemove: ['q']
+          })
+
+          router.push(newUrl, {scroll: true})
+        }
+      }
+    }, 300)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [search, route, pathname, searchParams, query])
+
   return (
     <div
       className={`background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}
@@ -43,7 +75,7 @@ const LocalSearchbar = ({
       <Input
         type="text"
         placeholder={placeholder}
-        // value=""
+        value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
       />
@@ -59,6 +91,6 @@ const LocalSearchbar = ({
       )}
     </div>
   )
-};
+}
 
-export default LocalSearchbar;
+export default LocalSearchbar
