@@ -39,7 +39,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
 
   const parseQuestionDetails =
     questionDetails && JSON.parse(questionDetails || "")
-  const groupTags = parseQuestionDetails.tags.map((tag: ITag) => tag.name)
+  const groupTags = parseQuestionDetails?.tags.map((tag: ITag) => tag.name)
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({

@@ -1,8 +1,9 @@
 "use client"
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import { usePathname, useRouter } from "next/navigation";
 
 interface CustomInpurProps {
   route: string;
@@ -20,6 +21,11 @@ const LocalSearchbar = ({
   placeholder,
   otherClasses,
 }: CustomInpurProps) => {
+  const router = useRouter()
+  const pathname= usePathname()
+  const [search, setSearch] = useState("")
+
+  
   return (
     <div
       className={`background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}
@@ -38,7 +44,7 @@ const LocalSearchbar = ({
         type="text"
         placeholder={placeholder}
         // value=""
-        onChange={() => {}}
+        onChange={(e) => setSearch(e.target.value)}
         className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
       />
 
@@ -52,7 +58,7 @@ const LocalSearchbar = ({
         />
       )}
     </div>
-  );
+  )
 };
 
 export default LocalSearchbar;
