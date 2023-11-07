@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import React from "react";
+import React from "react"
 import {
   Select,
   SelectContent,
@@ -8,21 +8,40 @@ import {
   SelectGroup,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
+import {  useRouter, useSearchParams } from "next/navigation"
+import { formUrlQuery } from "@/lib/utils"
 
 interface FilterProps {
   filters: {
-    name: string;
-    value: string;
-  }[];
-  otherClasses?: string;
-  containerClasses?: string;
+    name: string
+    value: string
+  }[]
+  otherClasses?: string
+  containerClasses?: string
 }
 
 const Filter = ({ filters, otherClasses, containerClasses }: FilterProps) => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const paramFilter = searchParams.get("filter")
+
+  // if the value changed, update query-string
+  function handleUpdateParams(value: string){
+    const newUrl = formUrlQuery({
+      params: searchParams.toString(),
+      key: "filter",
+      value
+    })
+
+    router.push(newUrl, { scroll: false })
+  }
   return (
     <div className={`relative ${containerClasses}`}>
-      <Select>
+      <Select
+        onValueChange={handleUpdateParams}
+        defaultValue={paramFilter || undefined}
+      >
         <SelectTrigger
           className={`${otherClasses} body-regular light-border background-light800_dark300 text-dark500_light700 border px-5 py-2.5`}
         >
@@ -42,6 +61,6 @@ const Filter = ({ filters, otherClasses, containerClasses }: FilterProps) => {
       </Select>
     </div>
   )
-};
+}
 
-export default Filter;
+export default Filter

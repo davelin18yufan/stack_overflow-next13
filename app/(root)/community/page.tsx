@@ -7,8 +7,11 @@ import { SearchParamsProps } from "@/types"
 import Link from "next/link"
 import React from "react"
 
-const page = async ({searchParams}: SearchParamsProps) => {
-  const { users } = await getAllUsers({searchQuery: searchParams.q})
+const page = async ({ searchParams }: SearchParamsProps) => {
+  const { users } = await getAllUsers({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  })
 
   return (
     <>

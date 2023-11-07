@@ -70,20 +70,22 @@ interface RemoveUrkQueryParams {
   keysToRemove: string[]
 }
 
+// update target query-string key
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {
-  const currentUrl = qs.parse(params) // obj  
+  const currentParams = qs.parse(params) // obj  
 
-  currentUrl[key] = value
+  currentParams[key] = value
 
   return qs.stringifyUrl(
     {
       url: window.location.pathname,
-      query: currentUrl,
+      query: currentParams,
     },
     { skipNull: true }
   )
 }
 
+// remove all keys
 export function removeKeysFromQuery({ params, keysToRemove }: RemoveUrkQueryParams) {
   const currentParams = qs.parse(params) // obj
 

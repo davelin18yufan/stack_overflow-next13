@@ -28,7 +28,6 @@ export async function createAnswer(params: CreateAnswerParams) {
     // TODO: Add interaction...
 
     revalidatePath(path)
-
   } catch (error) {
     console.log(error)
     throw error
@@ -38,7 +37,28 @@ export async function createAnswer(params: CreateAnswerParams) {
 export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase()
-    const { questionId } = params
+
+    const { questionId, sortBy, page = 1, pageSize = 10 } = params
+
+    let sortOption = {}
+
+    switch (sortBy) {
+      case "highestUpvotes":
+        sortOption = { upVotes: -1 }
+        break
+      case "lowestUpvotes":
+        sortOption = { upVotes: 1 }
+        break
+      case "recent":
+        sortOption = { createdAt: -1 }
+        break
+      case "old":
+        sortOption = { createdAt: 1 }
+        break
+      default:
+        sortOption = { createdAt: -1 }
+        break
+    }
 
     const answers = await Answer.find({ question: questionId })
       .populate({
@@ -46,7 +66,7 @@ export async function getAnswers(params: GetAnswersParams) {
         model: User,
         select: "_id clerkId picture name",
       })
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
 
     return { answers }
   } catch (error) {

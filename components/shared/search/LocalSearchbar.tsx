@@ -40,7 +40,7 @@ const LocalSearchbar = ({
           value: search,
         })
 
-        router.push(newUrl, {scroll: true})
+        router.push(newUrl, {scroll: false})
       }else {
         // if input is cleared
         if(pathname === route){
@@ -50,7 +50,7 @@ const LocalSearchbar = ({
             keysToRemove: ['q']
           })
 
-          router.push(newUrl, {scroll: true})
+          router.push(newUrl, {scroll: false})
         }
       }
     }, 300)

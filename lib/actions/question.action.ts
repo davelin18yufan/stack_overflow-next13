@@ -25,9 +25,9 @@ export async function getQuestions(params: GetQuestionsParams) {
 
     const { searchQuery, page = 1, pageSize = 10, filter } = params
 
-    // if match any condition then return
     const query: FilterQuery<typeof Question> = searchQuery
       ? {
+          // if match any condition then return
           $or: [
             { title: { $regex: new RegExp(searchQuery, "i") } },
             { content: { $regex: new RegExp(searchQuery, "i") } },
@@ -35,10 +35,27 @@ export async function getQuestions(params: GetQuestionsParams) {
         }
       : {}
 
+    let sortOption = {}
+
+    switch (filter) {
+      case "newest":
+        sortOption = { createdAt: -1 }
+        break
+      case "frequent":
+        sortOption = { views: -1 }
+        break
+      case "unanswered":
+        query.answers = { $size: 0 } // update the find query
+        break
+      default:
+        sortOption = { createdAt: -1 }
+        break
+    }
+
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag }) // Specifies paths which should be populated with other documents
       .populate({ path: "author", model: User })
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
 
@@ -237,11 +254,33 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         }
       : {}
 
+    let sortOption = {}
+
+    switch (filter) {
+      case "most_recent":
+        sortOption = {createdAt : -1}
+        break
+      case "oldest":
+        sortOption = { createdAt: 1 }
+        break
+      case "most_voted":
+        sortOption = { upVotes: -1 }
+        break
+      case "most_viewed":
+        sortOption = { views: -1 }
+        break
+      case "most_answered":
+        sortOption = { answers: -1 }
+        break
+      default:
+        break
+    }
+
     const user = await User.findOne({ clerkId }).populate({
       path: "postSaved",
       match: query,
       options: {
-        sort: { createdAt: -1 },
+        sort: sortOption,
       },
       populate: [
         { path: "author", model: User, select: "_id name clerkId picture" },

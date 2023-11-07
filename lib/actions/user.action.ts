@@ -32,8 +32,25 @@ export async function getAllUsers(params: GetAllUsersParams) {
         }
       : {}
 
+    let sortOption = {}
+
+    switch (filter) {
+      case "new_users":
+        sortOption = { joinedAt: -1 }
+        break
+      case "old_users":
+        sortOption = { joinedAt: 1 }
+        break
+      case "top_contributors":
+        sortOption = { reputation: -1}
+        break
+      default:
+        sortOption = { reputation: -1 }
+        break
+    }
+
     const users = await User.find(query)
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
 
