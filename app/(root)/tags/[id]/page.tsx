@@ -3,7 +3,6 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar"
 import NoResult from "@/components/shared/NoResult"
 import QuestionCard from "@/components/cards/QuestionCard"
 import { getQuestionByTagId } from "@/lib/actions/tag.action"
-import { IQuestion } from "@/database/question.model"
 import { URLProps } from "@/types"
 
 const Page = async ({ params, searchParams }: URLProps) => {
@@ -20,7 +19,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
       <div className="mt-11 w-full">
         <LocalSearchbar
-          route="/"
+          route={`/tags/${params.id}`}
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search Tag Questions..."

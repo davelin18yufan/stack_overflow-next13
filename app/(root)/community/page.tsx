@@ -3,11 +3,12 @@ import Filter from "@/components/shared/Filter"
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar"
 import { UserFilters } from "@/constants/filters"
 import { getAllUsers } from "@/lib/actions/user.action"
+import { SearchParamsProps } from "@/types"
 import Link from "next/link"
 import React from "react"
 
-const page = async () => {
-  const { users } = await getAllUsers({})
+const page = async ({searchParams}: SearchParamsProps) => {
+  const { users } = await getAllUsers({searchQuery: searchParams.q})
 
   return (
     <>

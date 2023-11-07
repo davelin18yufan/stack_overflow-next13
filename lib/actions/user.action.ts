@@ -14,6 +14,7 @@ import { revalidatePath } from "next/cache"
 import Question from "@/database/question.model"
 import Answer from "@/database/answer.model"
 import Tag from "@/database/tag.model"
+import { FilterQuery } from "mongoose"
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
@@ -21,7 +22,21 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
     const { page = 1, pageSize = 20, filter, searchQuery } = params
 
-    const users = await User.find({}).sort({ createdAt: -1 })
+    // if match any condition then return
+    const query: FilterQuery<typeof User> = searchQuery
+      ? {
+          $or: [
+            { name: { $regex: new RegExp(searchQuery, "i") } },
+            { username: { $regex: new RegExp(searchQuery, "i") } },
+          ],
+        }
+      : {}
+
+    const users = await User.find(query)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+
     return { users }
   } catch (error) {
     console.log(error)
@@ -134,7 +149,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       .sort({ createdAt: -1, views: -1, upVotes: -1 })
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .populate({path:'tags', model:Tag, select:'_id name'})
+      .populate({ path: "tags", model: Tag, select: "_id name" })
       .populate("author", "_id name clerkId picture")
 
     return { questions: userQuestions, totalQuestions }

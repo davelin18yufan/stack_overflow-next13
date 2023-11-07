@@ -85,14 +85,14 @@ export function formUrlQuery({ params, key, value }: UrlQueryParams) {
 }
 
 export function removeKeysFromQuery({ params, keysToRemove }: RemoveUrkQueryParams) {
-  const currentUrl = qs.parse(params) // obj
+  const currentParams = qs.parse(params) // obj
 
-  keysToRemove.forEach(key => delete currentUrl[key])
+  keysToRemove.forEach((key) => delete currentParams[key])
 
   return qs.stringifyUrl(
     {
       url: window.location.pathname,
-      query: currentUrl,
+      query: currentParams,
     },
     { skipNull: true }
   )

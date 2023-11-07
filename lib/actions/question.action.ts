@@ -22,10 +22,25 @@ import Interaction from "@/database/interaction.model"
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase()
-    const questions = await Question.find({})
+
+    const { searchQuery, page = 1, pageSize = 10, filter } = params
+
+    // if match any condition then return
+    const query: FilterQuery<typeof Question> = searchQuery
+      ? {
+          $or: [
+            { title: { $regex: new RegExp(searchQuery, "i") } },
+            { content: { $regex: new RegExp(searchQuery, "i") } },
+          ],
+        }
+      : {}
+
+    const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag }) // Specifies paths which should be populated with other documents
       .populate({ path: "author", model: User })
       .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
 
     return { questions }
   } catch (error) {
@@ -214,7 +229,12 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     const { clerkId, searchQuery, filter, page = 1, pageSize = 10 } = params
 
     const query: FilterQuery<typeof Question> = searchQuery
-      ? { title: { $regex: new RegExp(searchQuery, "i") } }
+      ? {
+          $or: [
+            { title: { $regex: new RegExp(searchQuery, "i") } },
+            { content: { $regex: new RegExp(searchQuery, "i") } },
+          ],
+        }
       : {}
 
     const user = await User.findOne({ clerkId }).populate({
