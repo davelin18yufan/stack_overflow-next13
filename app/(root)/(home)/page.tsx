@@ -8,11 +8,13 @@ import QuestionCard from "@/components/cards/QuestionCard"
 import NoResult from "@/components/shared/NoResult"
 import { getQuestions } from "@/lib/actions/question.action"
 import { SearchParamsProps } from "@/types"
+import Paginator from "@/components/shared/Paginator"
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestions({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   })
 
   // TODO: Fetch Recommand questions
@@ -72,6 +74,13 @@ export default async function Home({ searchParams }: SearchParamsProps) {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+
+      <div className="mt-10">
+        <Paginator
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          hasNextPage={result.hasNextPage}
+        />
       </div>
     </>
   )

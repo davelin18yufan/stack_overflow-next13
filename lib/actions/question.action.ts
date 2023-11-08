@@ -59,7 +59,11 @@ export async function getQuestions(params: GetQuestionsParams) {
       .skip((page - 1) * pageSize)
       .limit(pageSize)
 
-    return { questions }
+    // calculate if there is page next
+    const totalQuestions = await Question.countDocuments(query)
+    const hasNextPage = totalQuestions > (page - 1) * pageSize + questions.length
+
+    return { questions, hasNextPage }
   } catch (error) {
     console.log(error)
     throw error

@@ -12,7 +12,7 @@ interface Props {
   questionId: string
   userId: string
   totalAnswers: string
-  page?: number | string
+  page?: string
   filter?: string
 }
 
