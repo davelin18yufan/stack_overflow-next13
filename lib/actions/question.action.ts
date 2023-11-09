@@ -55,13 +55,15 @@ export async function getQuestions(params: GetQuestionsParams) {
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag }) // Specifies paths which should be populated with other documents
       .populate({ path: "author", model: User })
-      .sort(sortOption)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
+      .sort(sortOption)
 
     // calculate if there is page next
     const totalQuestions = await Question.countDocuments(query)
-    const hasNextPage = totalQuestions > (page - 1) * pageSize + questions.length
+    // if total > amount skip + amount show -> next page
+    const hasNextPage =
+      totalQuestions > (page - 1) * pageSize + questions.length
 
     return { questions, hasNextPage }
   } catch (error) {
@@ -262,7 +264,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 
     switch (filter) {
       case "most_recent":
-        sortOption = {createdAt : -1}
+        sortOption = { createdAt: -1 }
         break
       case "oldest":
         sortOption = { createdAt: 1 }
@@ -285,6 +287,8 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       match: query,
       options: {
         sort: sortOption,
+        skip: (page - 1) * pageSize,
+        limit: pageSize + 1, 
       },
       populate: [
         { path: "author", model: User, select: "_id name clerkId picture" },
@@ -294,7 +298,9 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 
     if (!user) throw new Error("User not found")
 
-    return { questions: user.postSaved }
+    const hasNextPage = user.postSaved.length > pageSize
+
+    return { questions: user.postSaved, hasNextPage }
   } catch (error) {
     console.log(error)
     throw error

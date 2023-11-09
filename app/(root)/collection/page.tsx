@@ -6,6 +6,7 @@ import NoResult from "@/components/shared/NoResult"
 import { getSavedQuestions } from "@/lib/actions/question.action"
 import { auth } from "@clerk/nextjs"
 import { SearchParamsProps } from "@/types"
+import Paginator from "@/components/shared/Paginator"
 
 export default async function page({ searchParams }: SearchParamsProps) {
   const { userId } = auth()
@@ -15,6 +16,7 @@ export default async function page({ searchParams }: SearchParamsProps) {
     clerkId: userId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1
   })
 
   return (
@@ -62,6 +64,13 @@ export default async function page({ searchParams }: SearchParamsProps) {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+
+      <div className="mt-10">
+        <Paginator 
+          pageNumber={searchParams.page ? +searchParams.page : 1}
+          hasNextPage={result.hasNextPage}
+        />
       </div>
     </>
   )

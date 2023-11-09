@@ -4,12 +4,12 @@ import NoResult from "@/components/shared/NoResult"
 import QuestionCard from "@/components/cards/QuestionCard"
 import { getQuestionByTagId } from "@/lib/actions/tag.action"
 import { URLProps } from "@/types"
+import Paginator from "@/components/shared/Paginator"
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const result = await getQuestionByTagId({
     tagId: params.id,
-    page: 1,
-    pageSize: 10,
+    page: searchParams.page ? +searchParams.page : 1,
     searchQuery: searchParams.q,
   })
 
@@ -53,6 +53,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+
+      <div className="mt-10">
+        <Paginator
+          pageNumber={searchParams.page ? +searchParams.page : 1}
+          hasNextPage={result.hasNextPage}
+        />
       </div>
     </>
   )

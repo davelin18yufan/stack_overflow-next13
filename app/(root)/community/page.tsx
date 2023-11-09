@@ -1,5 +1,6 @@
 import UserCard from "@/components/cards/UserCard"
 import Filter from "@/components/shared/Filter"
+import Paginator from "@/components/shared/Paginator"
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar"
 import { UserFilters } from "@/constants/filters"
 import { getAllUsers } from "@/lib/actions/user.action"
@@ -8,9 +9,10 @@ import Link from "next/link"
 import React from "react"
 
 const page = async ({ searchParams }: SearchParamsProps) => {
-  const { users } = await getAllUsers({
+  const { users, hasNextPage } = await getAllUsers({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1
   })
 
   return (
@@ -46,6 +48,13 @@ const page = async ({ searchParams }: SearchParamsProps) => {
           </div>
         )}
       </section>
+
+      <div className="mt-10">
+        <Paginator
+          pageNumber={searchParams.page ? +searchParams.page : 1}
+          hasNextPage={hasNextPage}
+        />
+      </div>
     </>
   )
 }

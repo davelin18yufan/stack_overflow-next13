@@ -71,9 +71,15 @@ export async function getAllTags(params: GetAllTagsParams) {
         break
     }
 
-    const tags = await Tag.find(query).sort(sortOption)
+    const tags = await Tag.find(query)
+      .sort(sortOption)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
 
-    return { tags }
+    const totalTags = await Tag.countDocuments(query)
+    const hasNextPage = totalTags > (page - 1) * pageSize + tags.length
+
+    return { tags, hasNextPage }
   } catch (error) {
     console.log(error)
     throw error
@@ -84,18 +90,21 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
   try {
     connectToDatabase()
 
-    const { tagId, searchQuery, page, pageSize } = params
+    const { tagId, searchQuery, page = 1, pageSize = 10 } = params
 
     const tagFilter: FilterQuery<ITag> = { _id: tagId }
+    const query: FilterQuery<typeof Tag> = searchQuery
+      ? { title: { $regex: new RegExp(searchQuery, "i") } }
+      : {}
 
     const tag = await Tag.findOne(tagFilter).populate({
       path: "questions",
       model: Question,
-      match: searchQuery
-        ? { title: { $regex: new RegExp(searchQuery, "i") } }
-        : {},
+      match: query,
       options: {
         sort: { createdAt: -1 },
+        skip: (page - 1) * pageSize,
+        limit: pageSize + 1, // check if there is any on the next page
       },
       populate: [
         { path: "author", model: User, select: "_id name clerkId picture" },
@@ -107,7 +116,9 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
 
     const questions = tag.questions
 
-    return { tagTitle: tag.name, questions }
+    const hasNextPage = questions.length > pageSize 
+
+    return { tagTitle: tag.name, questions, hasNextPage }
   } catch (error) {
     console.log(error)
     throw error

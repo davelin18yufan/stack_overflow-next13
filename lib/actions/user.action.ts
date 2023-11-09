@@ -50,11 +50,15 @@ export async function getAllUsers(params: GetAllUsersParams) {
     }
 
     const users = await User.find(query)
-      .sort(sortOption)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
+      .sort(sortOption)
 
-    return { users }
+    const totalUsers = await User.countDocuments(query)
+
+    const hasNextPage = totalUsers > (page - 1) * pageSize + users.length
+
+    return { users, hasNextPage }
   } catch (error) {
     console.log(error)
     throw error
@@ -169,7 +173,9 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       .populate({ path: "tags", model: Tag, select: "_id name" })
       .populate("author", "_id name clerkId picture")
 
-    return { questions: userQuestions, totalQuestions }
+    const hasNextPage = totalQuestions > (page - 1) * pageSize + userQuestions.length
+
+    return { questions: userQuestions, totalQuestions, hasNextPage }
   } catch (error) {
     console.log(error)
     throw error
@@ -190,7 +196,9 @@ export async function getUserAnswers(params: GetUserStatsParams) {
       .populate("author", "_id name clerkId picture")
       .populate("question", "title _id ")
 
-    return { answers: userAnswers, totalAnswers }
+      const hasNextPage = totalAnswers > (page - 1) * pageSize + userAnswers.length
+
+    return { answers: userAnswers, totalAnswers, hasNextPage }
   } catch (error) {
     console.log(error)
     throw error

@@ -23,9 +23,9 @@ const Paginator = ({ pageNumber, hasNextPage }: Props) => {
       value: nextPageNumber.toString(),
     })
 
-    router.push(newUrl, { scroll: false })
+    router.push(newUrl)
   }
-
+  
   // not enough for one page 
   if(!hasNextPage && pageNumber === 1) return null
   
