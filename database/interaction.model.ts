@@ -2,11 +2,11 @@ import {Schema, model, models, Document} from "mongoose"
 
 // record user action to every question 
 export interface IInteraction extends Document {
-  user: Schema.Types.ObjectId // reference to user
-  action: string
-  question: Schema.Types.ObjectId // reference to quesiton
-  answer: Schema.Types.ObjectId // reference to answer
-  tags: Schema.Types.ObjectId[] // reference to tag
+  user: Schema.Types.ObjectId 
+  action: string // what action user doing for platform
+  question: Schema.Types.ObjectId // recording which question user been focusing
+  answer: Schema.Types.ObjectId 
+  tags: Schema.Types.ObjectId[] // which tag be recommended to user
   createdAt: Date
 }
 

@@ -126,11 +126,23 @@ export async function createQuestion(params: CreateQuestionParams) {
       tagDocuments.push(existingTag._id)
     }
 
+    // interaction -> activity
+    await Interaction.create({
+      user: author,
+      action: "ask_question",
+      question: question._id,
+      tags: tagDocuments,
+    })
+
+    // reputation + 5
+    if (question) {
+      await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } })
+    }
+
     await Question.findByIdAndUpdate(question._id, {
       $push: { tags: { $each: tagDocuments } },
     })
 
-    // revalidation => purge data cache and update UI
     revalidatePath(path)
   } catch (error) {
     console.log(error)
@@ -162,8 +174,18 @@ export async function upVoteQuestion(params: QuestionVoteParams) {
     })
 
     if (!question) throw new Error("Question not found!")
-
-    // TODO: interaction
+    
+    // reputation
+    if (userId !== question.author.toString()) {
+      // user reputation + 1
+      await User.findByIdAndUpdate(userId, {
+        $inc: { reputation: hasupVoted ? -1 : 1 },
+      })
+      // author reputation + 10
+      await User.findByIdAndUpdate(question.author, {
+        $inc: { reputation: hasupVoted ? -10 : 10 },
+      })
+    }
 
     revalidatePath(path)
   } catch (error) {
@@ -196,6 +218,18 @@ export async function downVoteQuestion(params: QuestionVoteParams) {
     })
 
     if (!question) throw new Error("Question not found!")
+    
+    // reputation
+    if (userId !== question.author.toString()) {
+      // user reputation - 1
+      await User.findByIdAndUpdate(userId, {
+        $inc: { reputation: hasdownVoted ? 1 : -1 },
+      })
+      // author reputation - 2
+      await User.findByIdAndUpdate(question.author, {
+        $inc: { reputation: hasdownVoted ? 10 : -10 },
+      })
+    }
 
     // TODO: interaction
 
@@ -288,7 +322,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       options: {
         sort: sortOption,
         skip: (page - 1) * pageSize,
-        limit: pageSize + 1, 
+        limit: pageSize + 1,
       },
       populate: [
         { path: "author", model: User, select: "_id name clerkId picture" },
@@ -313,6 +347,8 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
 
     const { questionId, path } = params
 
+    const question = await Question.findById(questionId)
+
     // delete question/answers/interactivity/tags associate with question
     await Question.deleteOne({ _id: questionId })
     await Answer.deleteMany({ question: questionId })
@@ -321,6 +357,9 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
       { questions: questionId },
       { $pull: { questions: questionId } }
     )
+
+    // reputation - 5
+    await User.findByIdAndUpdate(question.author, { $inc: { reputation: -5 } })
 
     revalidatePath(path)
   } catch (error) {

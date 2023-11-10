@@ -21,11 +21,21 @@ export async function createAnswer(params: CreateAnswerParams) {
     const newAnswer = await Answer.create({ author, content, question })
 
     // Add answer into question's answer array
-    await Question.findByIdAndUpdate(question, {
+    const questionObj = await Question.findByIdAndUpdate(question, {
       $push: { answers: newAnswer._id },
     })
 
-    // TODO: Add interaction...
+    // interaction -> create answer
+    await Interaction.create({
+      user: author,
+      action: "answer",
+      question,
+      answer: newAnswer._id,
+      tags: questionObj.tags,
+    })
+
+    // reputation + 10
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } })
 
     revalidatePath(path)
   } catch (error) {
@@ -105,7 +115,17 @@ export async function upVoteAnswer(params: AnswerVoteParams) {
 
     if (!answer) throw new Error("Answer not found")
 
-    // TODO: interaction
+    // reputation 
+    if (userId !== answer.author.toString()) {
+      // user reputation + 2
+      await User.findByIdAndUpdate(userId, {
+        $inc: { reputation: hasupVoted ? -2 : 2 },
+      })
+      // author reputation + 10
+      await User.findByIdAndUpdate(answer.author, {
+        $inc: { reputation: hasupVoted ? -10 : 10 },
+      })
+    }
 
     revalidatePath(path)
   } catch (error) {
@@ -139,7 +159,16 @@ export async function downVoteAnswer(params: AnswerVoteParams) {
 
     if (!answer) throw new Error("Answer not found")
 
-    // TODO: interaction
+    if (userId !== answer.author.toString()) {
+      // user reputation - 2
+      await User.findByIdAndUpdate(userId, {
+        $inc: { reputation: hasdownVoted ? 2 : -2 },
+      })
+      // author reputation + 10
+      await User.findByIdAndUpdate(answer.author, {
+        $inc: { reputation: hasdownVoted ? 10 : -10 },
+      })
+    }
 
     revalidatePath(path)
   } catch (error) {
@@ -158,13 +187,16 @@ export async function deleteAnswer(params: DeleteAnswerParams) {
 
     if (!answer) throw new Error("Answer not found")
 
-    // delete answer within quesiton and interaction
+    // delete answer within question and interaction
     await Answer.deleteOne({ _id: answerId })
     await Question.updateMany(
       { answer: answerId },
       { $pull: { answers: answerId } }
     )
     await Interaction.deleteMany({ answer: answerId })
+
+    // reputation - 10
+    await User.findByIdAndUpdate(answer.author, {$inc: {reputation : -10}})
 
     revalidatePath(path)
   } catch (error) {
