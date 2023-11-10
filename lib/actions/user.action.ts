@@ -15,6 +15,8 @@ import Question from "@/database/question.model"
 import Answer from "@/database/answer.model"
 import Tag from "@/database/tag.model"
 import { FilterQuery } from "mongoose"
+import { BadgeCriteriaType } from "@/types"
+import { assignBadges } from "../utils"
 
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
@@ -42,7 +44,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
         sortOption = { joinedAt: 1 }
         break
       case "top_contributors":
-        sortOption = { reputation: -1}
+        sortOption = { reputation: -1 }
         break
       default:
         sortOption = { reputation: -1 }
@@ -147,10 +149,74 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalQuestions = await Question.countDocuments({ author: user._id }) // count where author=userId
     const totalAnswers = await Answer.countDocuments({ author: user._id })
 
+    // get summary of every action
+    const [questionUpVotes] = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0, // exclude
+          upVotes: { $size: "$upVotes" }, // create a field which is the size of upVotes
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpVotes: { $sum: "$upVotes" },
+        },
+      },
+    ])
+
+    const [answerUpVotes] = await Answer.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0, // exclude
+          upVotes: { $size: "$upVotes" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpVotes: { $sum: "$upVotes" },
+        },
+      },
+    ])
+
+    const [questionViews] = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $group: {
+          _id: null,
+          totalViews: { $sum: "$views" },
+        },
+      },
+    ])
+
+    const scores = [
+      { type: "QUESTION_COUNT" as BadgeCriteriaType, count: totalQuestions },
+      { type: "ANSWER_COUNT" as BadgeCriteriaType, count: totalAnswers },
+      {
+        type: "QUESTION_UPVOTES" as BadgeCriteriaType,
+        count: questionUpVotes?.totalUpVotes || 0,
+      },
+      {
+        type: "ANSWER_UPVOTES" as BadgeCriteriaType,
+        count: answerUpVotes?.totalUpVotes || 0,
+      },
+      {
+        type: "TOTAL_VIEWS" as BadgeCriteriaType,
+        count: questionViews?.totalViews || 0,
+      },
+    ]
+
+    const badgeCounts = assignBadges( {criteria:scores})
+
     return {
       user,
       totalAnswers,
       totalQuestions,
+      badgeCounts,
+      reputation: user.reputation
     }
   } catch (error) {
     console.log(error)
@@ -173,7 +239,8 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       .populate({ path: "tags", model: Tag, select: "_id name" })
       .populate("author", "_id name clerkId picture")
 
-    const hasNextPage = totalQuestions > (page - 1) * pageSize + userQuestions.length
+    const hasNextPage =
+      totalQuestions > (page - 1) * pageSize + userQuestions.length
 
     return { questions: userQuestions, totalQuestions, hasNextPage }
   } catch (error) {
@@ -196,7 +263,8 @@ export async function getUserAnswers(params: GetUserStatsParams) {
       .populate("author", "_id name clerkId picture")
       .populate("question", "title _id ")
 
-      const hasNextPage = totalAnswers > (page - 1) * pageSize + userAnswers.length
+    const hasNextPage =
+      totalAnswers > (page - 1) * pageSize + userAnswers.length
 
     return { answers: userAnswers, totalAnswers, hasNextPage }
   } catch (error) {
