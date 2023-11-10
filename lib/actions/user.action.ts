@@ -150,18 +150,20 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalAnswers = await Answer.countDocuments({ author: user._id })
 
     // get summary of every action
-    const [questionUpVotes] = await Question.aggregate([
+    const [questionSum] = await Question.aggregate([
       { $match: { author: user._id } },
       {
         $project: {
           _id: 0, // exclude
           upVotes: { $size: "$upVotes" }, // create a field which is the size of upVotes
+          views: { $sum: "＄views" },
         },
       },
       {
         $group: {
           _id: null,
           totalUpVotes: { $sum: "$upVotes" },
+          totalViews: { $sum: "$views" },
         },
       },
     ])
@@ -182,22 +184,12 @@ export async function getUserInfo(params: GetUserByIdParams) {
       },
     ])
 
-    const [questionViews] = await Question.aggregate([
-      { $match: { author: user._id } },
-      {
-        $group: {
-          _id: null,
-          totalViews: { $sum: "$views" },
-        },
-      },
-    ])
-
     const scores = [
       { type: "QUESTION_COUNT" as BadgeCriteriaType, count: totalQuestions },
       { type: "ANSWER_COUNT" as BadgeCriteriaType, count: totalAnswers },
       {
         type: "QUESTION_UPVOTES" as BadgeCriteriaType,
-        count: questionUpVotes?.totalUpVotes || 0,
+        count: questionSum?.totalUpVotes || 0,
       },
       {
         type: "ANSWER_UPVOTES" as BadgeCriteriaType,
@@ -205,18 +197,18 @@ export async function getUserInfo(params: GetUserByIdParams) {
       },
       {
         type: "TOTAL_VIEWS" as BadgeCriteriaType,
-        count: questionViews?.totalViews || 0,
+        count: questionSum?.totalViews || 0,
       },
     ]
 
-    const badgeCounts = assignBadges( {criteria:scores})
+    const badgeCounts = assignBadges({ criteria: scores })
 
     return {
       user,
       totalAnswers,
       totalQuestions,
       badgeCounts,
-      reputation: user.reputation
+      reputation: user.reputation,
     }
   } catch (error) {
     console.log(error)
