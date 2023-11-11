@@ -1,7 +1,6 @@
 import { getQuestionById } from "@/lib/actions/question.action"
 import Image from "next/image"
 import Link from "next/link"
-import React from "react"
 import Metric from "@/components/shared/Metric"
 import { formatNumber, getTimestamp } from "@/lib/utils"
 import ParseHTML from "@/components/shared/ParseHTML"

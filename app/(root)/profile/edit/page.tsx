@@ -2,7 +2,6 @@ import Profile from "@/components/forms/Profile"
 import { getUserById } from "@/lib/actions/user.action"
 import { auth } from "@clerk/nextjs"
 import { redirect } from "next/navigation"
-import React from "react"
 
 const Page = async () => {
   const { userId } = auth()

@@ -1,4 +1,3 @@
-import React from "react"
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar"
 import NoResult from "@/components/shared/NoResult"
 import QuestionCard from "@/components/cards/QuestionCard"
