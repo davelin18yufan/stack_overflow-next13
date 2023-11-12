@@ -12,6 +12,22 @@ import ProfileLink from "@/components/shared/ProfileLink"
 import Stats from "@/components/shared/Stats"
 import QuestionTab from "@/components/shared/QuestionTab"
 import AnswersTab from "@/components/shared/AnswersTab"
+import { Metadata, ResolvingMetadata } from "next"
+
+export async function generateMetadata(
+  { params }: { params: { id: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const {user} = await getUserInfo({ userId: params.id })
+  
+  return {
+    title: `${user.name} | Dev Overflow`,
+    description : user.bio,
+    openGraph: {
+      images: [user.picture]
+    }
+  }
+}
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth()

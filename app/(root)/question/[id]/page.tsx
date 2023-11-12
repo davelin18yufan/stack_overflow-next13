@@ -11,6 +11,26 @@ import { auth } from "@clerk/nextjs"
 import { getUserById } from "@/lib/actions/user.action"
 import Votes from "@/components/shared/Votes"
 import { URLProps } from "@/types"
+import type { Metadata } from "next"
+
+export async function generateMetadata(
+  { params }: { params: { id: string } }
+): Promise<Metadata> {
+  const { id } = params
+  const { userId: clerkId } = auth()
+
+  let mongoUser
+
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId })
+  }
+
+  const result = await getQuestionById({ questionId: id })
+
+  return {
+    title: `${result.title} | Dev Overflow`,
+  }
+}
 
 // :id => {params}, ?id => {searchParams}
 const page = async ({ params, searchParams }: URLProps) => {

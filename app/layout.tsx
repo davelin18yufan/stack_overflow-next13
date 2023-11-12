@@ -28,7 +28,14 @@ export const metadata: Metadata = {
   icons: {
     icon: "/assets/images/site-logo.svg",
   },
-};
+  openGraph: {
+    title: "Dev Overflow",
+    url: process.env.NEXT_PUBLIC_SERVER_URL,
+    siteName: "Dev Overflow",
+    locale: "en_US",
+    type: "website",
+  },
+}
 
 // auth wrapper
 export default function RootLayout({
