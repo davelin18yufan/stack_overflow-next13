@@ -406,6 +406,13 @@ export async function getHotQuestions() {
   }
 }
 
+// It's the tags that reveal user interests!
+// That's why extended Interaction model to include tags for each question action.
+// 1. Retrieve all interactions made by that specific user.
+// 2. Extract unique tags from all these interactions.
+// 3. Query the Question model to find questions:
+// 4. That have at least one tag associated with the user's interactions.
+// 5. That were not created by the user.
 export async function getRecommendedQuestions(params: RecommendedParams) {
   try {
     connectToDatabase()
