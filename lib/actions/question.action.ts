@@ -13,6 +13,7 @@ import {
   GetSavedQuestionsParams,
   EditQuestionParams,
   DeleteQuestionParams,
+  RecommendedParams,
 } from "@/types/shared"
 import { revalidatePath } from "next/cache"
 import { FilterQuery } from "mongoose"
@@ -174,7 +175,7 @@ export async function upVoteQuestion(params: QuestionVoteParams) {
     })
 
     if (!question) throw new Error("Question not found!")
-    
+
     // reputation
     if (userId !== question.author.toString()) {
       // user reputation + 1
@@ -218,7 +219,7 @@ export async function downVoteQuestion(params: QuestionVoteParams) {
     })
 
     if (!question) throw new Error("Question not found!")
-    
+
     // reputation
     if (userId !== question.author.toString()) {
       // user reputation - 1
@@ -401,6 +402,60 @@ export async function getHotQuestions() {
     return hotQuestions
   } catch (error) {
     console.log(error)
+    throw error
+  }
+}
+
+export async function getRecommendedQuestions(params: RecommendedParams) {
+  try {
+    connectToDatabase()
+
+    const { userId, page = 1, pageSize = 20, searchQuery } = params
+
+    // get the current user
+    const user = await User.findOne({ clerkId: userId })
+    if (!user) throw new Error("User not found")
+
+    // get the corresponding interaction
+    const userInteraction = await Interaction.find({ user: user._id })
+      .populate("tags")
+      .exec()
+
+    // extract tags
+    const userTags = userInteraction.reduce((tags, interaction) => {
+      if (interaction.tags) {
+        tags = tags.concat(interaction.tags)
+      }
+      return tags
+    }, [])
+    // remove duplicate tag ID
+    const distinctUserTagIds = [
+      // @ts-ignore
+      ...new Set(userTags.map((tag) => tag._id)),
+    ]
+
+    // depends on the user's most interactive tag -> query to question
+    const query: FilterQuery<typeof Question> = searchQuery ? {
+      $and: [
+        { tags: { $in: distinctUserTagIds } }, //questions includes user's tag ID
+        { author: { $ne: user._id } }, // Exclude user's own question
+      ],
+    } : {}
+
+    const totalQuestions = await Question.countDocuments(query)
+
+    const recommendedQuestion = await Question.find(query)
+      .populate("author")
+      .populate("tags")
+      .sort({createdAt: -1})
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+    
+      const hasNextPage = totalQuestions > (page - 1 ) * pageSize + recommendedQuestion.length
+
+    return { questions : recommendedQuestion, hasNextPage}
+  } catch (error) {
+    console.log("Error in getting recommended questions",error)
     throw error
   }
 }
