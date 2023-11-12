@@ -442,12 +442,19 @@ export async function getRecommendedQuestions(params: RecommendedParams) {
     ]
 
     // depends on the user's most interactive tag -> query to question
-    const query: FilterQuery<typeof Question> = searchQuery ? {
+    const query: FilterQuery<typeof Question> = {
       $and: [
-        { tags: { $in: distinctUserTagIds } }, //questions includes user's tag ID
-        { author: { $ne: user._id } }, // Exclude user's own question
+        { tags: { $in: distinctUserTagIds } }, // Questions with user's tags
+        { author: { $ne: user._id } }, // Exclude user's own questions
       ],
-    } : {}
+    }
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: searchQuery, $options: "i" } },
+        { content: { $regex: searchQuery, $options: "i" } },
+      ]
+    }
 
     const totalQuestions = await Question.countDocuments(query)
 
