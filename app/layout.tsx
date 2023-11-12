@@ -3,6 +3,7 @@ import React from "react";
 import { Inter, Space_Grotesk } from "next/font/google";
 import type { Metadata } from "next";
 import "../styles/prism.css"
+import "./globals.css"
 import { ThemeProvider } from "@/context/ThemeProvider";
 
 // setting font styles with function provided by next/google
