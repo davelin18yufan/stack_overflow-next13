@@ -249,7 +249,7 @@ export async function getUserAnswers(params: GetUserStatsParams) {
 
     const totalAnswers = await Answer.countDocuments({ author: userId })
     const userAnswers = await Answer.find({ author: userId })
-      .sort({ upVotes: -1 })
+      .sort({ createdAt: -1, upVotes: -1 })
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .populate("author", "_id name clerkId picture")
