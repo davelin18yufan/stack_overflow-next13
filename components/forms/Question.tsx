@@ -23,6 +23,7 @@ import { createQuestion, editQuestion } from "@/lib/actions/question.action"
 import { usePathname, useRouter } from "next/navigation"
 import useTheme from "@/context/ThemeProvider"
 import { ITag } from "@/database/tag.model"
+import { toast } from "../ui/use-toast"
 
 interface Props {
   type?: string
@@ -76,6 +77,10 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
         })
 
         router.push("/")
+
+        toast({
+          title: `Question ${type === "Edit" ? "Edit" : "Creating"} successfully!`
+        })
       }
     } catch (error) {
       console.log(error)

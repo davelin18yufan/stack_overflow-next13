@@ -18,6 +18,8 @@ import { Button } from "../ui/button"
 import Image from "next/image"
 import { createAnswer } from "@/lib/actions/answer.action"
 import { usePathname } from "next/navigation"
+import { toast } from "../ui/use-toast"
+import { ToastAction } from "../ui/toast"
 
 interface Props {
   question: string
@@ -25,10 +27,11 @@ interface Props {
   authorId: string
 }
 
-const Answer = ({question, questionId, authorId}:Props) => {
+const Answer = ({ question, questionId, authorId }: Props) => {
   const editorRef = useRef(null)
   const { mode } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmittingAi, setIsSubmittingAi] = useState(false)
   const pathname = usePathname()
 
   const form = useForm<z.infer<typeof AnswerSchema>>({
@@ -46,20 +49,59 @@ const Answer = ({question, questionId, authorId}:Props) => {
         content: values.answer,
         author: JSON.parse(authorId),
         question: JSON.parse(questionId),
-        path: pathname
+        path: pathname,
       })
 
       form.reset()
 
-      if(editorRef.current){
+      if (editorRef.current) {
         const editor = editorRef.current as any
 
         editor.setContent("")
       }
+
+      toast({
+        title: "Answer created successfully!",
+      })
     } catch (error) {
       console.log(error)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  async function generateAiAnswer() {
+    setIsSubmittingAi(true)
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
+        {
+          method: "POST",
+          body: JSON.stringify({ question }),
+        }
+      )
+
+      const aiAnswer = await response.json()
+
+      //  convert plain text into html
+      const formatAnswer = aiAnswer.reply.replace(/\n/g, "<br/>")
+
+      if (editorRef.current) {
+        const editor = editorRef.current as any
+        editor.setContent(formatAnswer)
+      }
+
+      // toast
+      toast({
+        title: "AI answer generate successfully",
+        description: "Go check the result",
+        action: <ToastAction altText="Got it!">Got it!</ToastAction>,
+      })
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSubmittingAi(false)
     }
   }
 
@@ -72,16 +114,22 @@ const Answer = ({question, questionId, authorId}:Props) => {
 
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          onClick={() => {}}
+          onClick={generateAiAnswer}
         >
-          <Image
-            src="/assets/icons/stars.svg"
-            alt="star"
-            width={12}
-            height={12}
-            className="object-contain"
-          />
-          Generate an AI Answer
+          {isSubmittingAi ? (
+            <>Generating...</>
+          ) : (
+            <>
+              <Image
+                src="/assets/icons/stars.svg"
+                alt="star"
+                width={12}
+                height={12}
+                className="object-contain"
+              />
+              Generate AI Answer
+            </>
+          )}
         </Button>
       </div>
       <Form {...form}>
@@ -96,6 +144,7 @@ const Answer = ({question, questionId, authorId}:Props) => {
               <FormItem className="flex w-full flex-col gap-3">
                 <FormControl className="mt-3.5">
                   <Editor
+                    disabled={isSubmittingAi}
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     onInit={(evt, editor) => {
                       // @ts-ignore
