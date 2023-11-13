@@ -83,7 +83,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       )
 
       const aiAnswer = await response.json()
-      console.log(aiAnswer)
+      console.log(process.env.NEXT_PUBLIC_SERVER_URL)
       //  convert plain text into html
       const formatAnswer = aiAnswer.reply.replace(/\n/g, "<br/>")
 
