@@ -74,6 +74,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
     setIsSubmittingAi(true)
 
     try {
+      console.log(process.env.NEXT_PUBLIC_SERVER_URL)
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
         {
@@ -83,7 +84,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       )
 
       const aiAnswer = await response.json()
-      console.log(process.env.NEXT_PUBLIC_SERVER_URL)
+      
       //  convert plain text into html
       const formatAnswer = aiAnswer.reply.replace(/\n/g, "<br/>")
 
