@@ -106,8 +106,8 @@ const Votes = async ({
       }
 
       return toast({
-        title: `Downvote ${hasDownVoted ? "Successfully" : "Removed"}`,
-        variant: `${hasDownVoted ? "default" : "destructive"}`,
+        title: `Downvote ${hasDownVoted ? "Removed" : "Successfully"}`,
+        variant: `${hasDownVoted ? "destructive" : "default"}`,
       })
     }
   }
