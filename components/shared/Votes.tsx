@@ -81,8 +81,8 @@ const Votes = async ({
       }
 
       return toast({
-        title: `Upvote ${hasUpVoted ? "Successfully" : "Removed"}`,
-        variant: `${hasUpVoted ? "default" : "destructive"}`,
+        title: `Upvote ${hasUpVoted ? "Removed" : "Successfully"}`,
+        variant: `${hasUpVoted ? "destructive" : "default"}`,
       })
     }
 
