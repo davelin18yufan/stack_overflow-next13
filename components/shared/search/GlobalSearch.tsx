@@ -44,7 +44,7 @@ const GlobalSearch = () => {
         })
         router.push(newUrl, { scroll: false })
       } else {
-        // if local search exist -> clear
+        // clear query of searchParams
         if (query) {
           const newUrl = removeKeysFromQuery({
             params: searchParams.toString(),

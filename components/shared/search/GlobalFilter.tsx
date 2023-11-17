@@ -15,7 +15,7 @@ const GlobalFilter = () => {
 
   function handleTypeClick(type: string) {
     if (active === type) {
-      // if tag being clicked === active tag => clear filter
+      // click the activated tag => clear filter
       setActive("")
 
       const newUrl = formUrlQuery({
@@ -26,6 +26,7 @@ const GlobalFilter = () => {
 
       router.push(newUrl, { scroll: false })
     } else {
+      // activate tag
       setActive(type)
 
       const newUrl = formUrlQuery({
