@@ -38,6 +38,14 @@ const Votes = async ({
   const router = useRouter()
 
   const handleSave = async () => {
+    // check if user is login
+    if (!userId) {
+      return toast({
+        title: "Please log in",
+        description: "You must log in to perform this operation",
+      })
+    }
+    
     await toggleSaveQuestion({
       userId: JSON.parse(userId),
       questionId: JSON.parse(itemId),
@@ -53,7 +61,7 @@ const Votes = async ({
   }
 
   const handleVote = async (vote: string) => {
-    // check if user is logined
+    // check if user is login
     if (!userId) {
       return toast({
         title: "Please log in",
