@@ -6,35 +6,38 @@ import { HomePageFilters } from "@/constants/filters"
 import HomeFilters from "@/components/home/HomeFilters"
 import QuestionCard from "@/components/cards/QuestionCard"
 import NoResult from "@/components/shared/NoResult"
-import { getQuestions, getRecommendedQuestions } from "@/lib/actions/question.action"
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action"
 import { SearchParamsProps } from "@/types"
 import Paginator from "@/components/shared/Paginator"
 import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs"
 
-export const metadata:Metadata = {
+export const metadata: Metadata = {
   title: "Home | Dev Overflow",
 }
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const {userId} = auth()
+  const { userId } = auth()
 
-  let result 
+  let result
 
-  if(searchParams?.filter === "recommended"){
-    if(userId){
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
       result = await getRecommendedQuestions({
         userId,
-        page: searchParams.page? +searchParams.page : 1,
-        searchQuery: searchParams.q
+        page: searchParams.page ? +searchParams.page : 1,
+        searchQuery: searchParams.q,
       })
-    }else{
+    } else {
       result = {
-        questions : [],
-        hasNextPage : false
+        questions: [],
+        hasNextPage: false,
       }
     }
-  }else {
+  } else {
     result = await getQuestions({
       searchQuery: searchParams.q,
       filter: searchParams.filter,
@@ -42,7 +45,6 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     })
   }
 
-  // TODO: Fetch Recommend questions
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -91,10 +93,16 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           ))
         ) : (
           <NoResult
-            title="There's no question to show"
-            description="Be the first to break the silence! 🚀 Ask a Question and kickstart the
-        discussion. our query could be the next big thing others learn from. Get
-        involved! 💡"
+            title={
+              searchParams?.filter === "recommended"
+                ? "Hello there, this is your first time here"
+                : "There's no question to show"
+            }
+            description={
+              searchParams?.filter === "recommended"
+                ? "You haven't interacted with any question, select a desirable question or ask a new one, let us know your tastes!"
+                : "Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
+            }
             link="/ask-question"
             linkTitle="Ask a Question"
           />

@@ -1,7 +1,10 @@
-import React from "react"
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "../ui/button"
+import { toast } from "../ui/use-toast"
+import { useAuth } from "@clerk/nextjs"
 
 interface Props {
   title: string
@@ -11,6 +14,14 @@ interface Props {
 }
 
 const NoResult = ({ title, description, link, linkTitle }: Props) => {
+  const { userId } = useAuth()
+  if (!userId) {
+    toast({
+      title: "You have to login first!",
+      variant: "destructive",
+    })
+  }
+
   return (
     <div className="mt-10 flex w-full flex-col items-center justify-center">
       {/* light mode */}
