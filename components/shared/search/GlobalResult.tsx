@@ -50,7 +50,7 @@ const GlobalResult = () => {
       case "answer":
         return `/question/${id}`
       case "tag":
-        return `/tag/${id}`
+        return `/tags/${id}`
       case "user":
         return `/profile/${id}`
       default:
