@@ -37,15 +37,15 @@ Dev Overflow is a user-centric full-stack web and mobile application, designed a
 - Streamlined user onboarding with third-party login functionality, enhancing accessibility.
 
 ## Impact
-- Cultivated a vibrant user community with [10+] of active participants.
+- Cultivated a vibrant user community with _10+_ of active participants.
 - Garnered positive user feedback for innovative features, contributing to increased user engagement.
 
 ## Challenges
-- Overcame obstacles in [quality signals], ensuring a seamless and problem-free user experience.
+- Overcame obstacles in *facet of the user experience*, ensuring a seamless and problem-free user experience.
 
 <img src="public/webVitals.png" alt="webVitals" style="width: 60%; height:60%"/>
 
 ## Technological Proficiency
-Demonstrated expertise in [Next14], ensuring the development of a robust, scalable, and cutting-edge application.
+Demonstrated expertise in *Next14*, ensuring the development of a robust, scalable, and cutting-edge application.
 
 **🚀 Welcome! Feel free to provide feedback, suggestions, or ask any questions. We appreciate your input! 🌟**
