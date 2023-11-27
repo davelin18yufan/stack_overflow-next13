@@ -3,7 +3,7 @@
 ## Description
 Dev Overflow is a user-centric full-stack web and mobile application, designed and developed to provide a dynamic Q&A platform inspired by Stack Overflow. This project aims to deliver an intuitive and engaging experience for users seeking programming-related assistance and knowledge sharing.
 
-![Intro](https://github.com/davelin18yufan/stack_overflow-next13/assets/113662980/45abd87d-c3fd-4128-8b7c-6aaced7904e4)
+<img src="public/GIF.gif" alt="GIF" style="width:60%; height:60%"/>
 
 ## Tech Stack
 - **Frontend Development:**
@@ -43,7 +43,7 @@ Dev Overflow is a user-centric full-stack web and mobile application, designed a
 ## Challenges
 - Overcame obstacles in [quality signals], ensuring a seamless and problem-free user experience.
 
-![WebVitals](/public/webVitals.png)
+<img src="public/webVitals.png" alt="webVitals" style="width: 60%; height:60%"/>
 
 ## Technological Proficiency
 Demonstrated expertise in [Next14], ensuring the development of a robust, scalable, and cutting-edge application.
