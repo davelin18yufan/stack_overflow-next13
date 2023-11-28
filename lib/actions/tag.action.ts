@@ -10,6 +10,7 @@ import User from "@/database/user.model"
 import Tag, { ITag } from "@/database/tag.model"
 import Question from "@/database/question.model"
 import { FilterQuery } from "mongoose"
+import Interaction from "@/database/interaction.model"
 
 export async function getTopInteractiveTags(
   params: GetTopInteractedTagsParams
@@ -24,13 +25,36 @@ export async function getTopInteractiveTags(
     if (!user) throw Error("user not found")
 
     // find interactions for the user and grown tags...
-    // interaction
-
-    return [
-      { _id: "123", name: "HTML" },
-      { _id: "123", name: "HTML" },
-      { _id: "123", name: "HTML" },
+    // get the corresponding interaction
+    const userInteraction = await Interaction.find({ user: user._id })
+      .populate("tags")
+      .exec()
+    // extract tags
+    const userTags = userInteraction.reduce((tags, interaction) => {
+      if (interaction.tags) {
+        tags = tags.concat(interaction.tags)
+      }
+      return tags
+    }, [])
+    // remove duplicate tag ID
+    const distinctUserTagIds = [
+      // @ts-ignore
+      ...new Set(userTags.map((tag) => tag._id)),
     ]
+
+    // depends on the user's most interactive tag -> query to question
+    const query: FilterQuery<typeof Tag> = {
+      $and: [
+        { _id: { $in: distinctUserTagIds } }, 
+      ],
+    }
+
+    const interactiveTags = await Tag.find(query).limit(3)
+    return interactiveTags.map(item => ({
+      _id: item._id,
+      name: item.name
+     }))
+
   } catch (error) {
     console.log(error)
     throw error
