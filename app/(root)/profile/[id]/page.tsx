@@ -18,14 +18,14 @@ export async function generateMetadata(
   { params }: { params: { id: string } },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const {user} = await getUserInfo({ userId: params.id })
-  
+  const { user } = await getUserInfo({ userId: params.id })
+
   return {
     title: `${user.name} | Dev Overflow`,
-    description : user.bio,
+    description: user.bio,
     openGraph: {
-      images: [user.picture]
-    }
+      images: [user.picture],
+    },
   }
 }
 
@@ -113,7 +113,10 @@ const Page = async ({ params, searchParams }: URLProps) => {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="top-posts" className='mt-5 flex w-full flex-col gap-6'>
+          <TabsContent
+            value="top-posts"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
             <QuestionTab
               searchParams={searchParams}
               userId={userInfo.user._id}
