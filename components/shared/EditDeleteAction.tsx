@@ -4,6 +4,7 @@ import Image from "next/image"
 import { deleteQuestion } from "@/lib/actions/question.action"
 import { usePathname, useRouter } from "next/navigation"
 import { deleteAnswer } from "@/lib/actions/answer.action"
+import { toast } from "@/components/ui/use-toast"
 
 interface Props {
   itemId: string
@@ -21,8 +22,16 @@ const EditDeleteAction = ({ itemId, type }: Props) => {
   async function handleDelete() {
     if (type === "Question") {
       await deleteQuestion({ questionId: JSON.parse(itemId), path: pathname })
+      toast({
+        title: "Question Delete Successfully",
+        variant: "default"
+      })
     }else if(type === "Answer"){
       await deleteAnswer({ answerId: JSON.parse(itemId), path: pathname })
+      toast({
+        title: "Answer Delete Successfully",
+        variant: "default",
+      })
     }
   }
   return (
