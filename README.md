@@ -5,6 +5,11 @@ Dev Overflow is a user-centric full-stack web and mobile application, designed a
 
 <img src="public/GIF.gif" alt="GIF" style="width:60%; height:60%"/>
 
+## Testing Account
+While it is recommended to sign up with your own account, if you prefer not to use your own account, you can log in using the following email:
+  - Email: dev.guest.only@gmail.com
+  - password: guestOnly01
+
 ## Tech Stack
 - **Frontend Development:**
   - Next.js 14
