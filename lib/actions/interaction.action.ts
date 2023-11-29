@@ -11,6 +11,8 @@ export async function viewQuestion(params: ViewQuestionParams) {
 
     const { userId, questionId } = params
 
+    const question = await Question.findById(questionId).populate("tags", "_id")
+
     // Update view count for the question
     await Question.findByIdAndUpdate(questionId, {
       $inc: { views: 1 }, // increment
@@ -31,6 +33,7 @@ export async function viewQuestion(params: ViewQuestionParams) {
         user: userId,
         action: "view",
         question: questionId,
+        tags: question.tags || [],
       })
     }
   } catch (error) {

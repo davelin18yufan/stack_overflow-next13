@@ -24,7 +24,7 @@ export async function getTopInteractiveTags(
 
     if (!user) throw Error("user not found")
 
-    // find interactions for the user and grown tags...
+    //* find interactions for the user and grown tags...
     // get the corresponding interaction
     const userInteraction = await Interaction.find({ user: user._id })
       .populate("tags")
