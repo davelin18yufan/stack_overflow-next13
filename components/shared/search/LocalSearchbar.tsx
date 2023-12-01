@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils"
 
 interface CustomInputProps {
   route: string
@@ -33,26 +32,18 @@ const LocalSearchbar = ({
     // Do not send request on every change event happened
     // fire request after specific delay => debounce
     const delayDebounceFn = setTimeout(() => {
+      const currentParams = new URLSearchParams(searchParams)
       if (search) {
-        const newUrl = formUrlQuery({
-          params: searchParams.toString(), // original params in Url
-          key: "q",
-          value: search,
-        })
-
-        router.push(newUrl, { scroll: false })
+        currentParams.set("q", search)  
       } else {
         // if input is cleared
         if (pathname === route) {
           // delete query
-          const newUrl = removeKeysFromQuery({
-            params: searchParams.toString(),
-            keysToRemove: ["q"],
-          })
-
-          router.push(newUrl, { scroll: false })
+          currentParams.delete("q")
         }
       }
+
+      router.replace(`${pathname}?${currentParams.toString()}`)
     }, 300)
 
     return () => clearTimeout(delayDebounceFn)
@@ -75,7 +66,7 @@ const LocalSearchbar = ({
       <Input
         type="text"
         placeholder={placeholder}
-        value={search}
+        defaultValue={searchParams.get("q")?.toString()}
         onChange={(e) => setSearch(e.target.value)}
         className="paragraph-regular no-focus placeholder text-dark400_light700 bg-transparent border-none shadow-none outline-none"
       />

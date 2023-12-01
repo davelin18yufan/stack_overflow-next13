@@ -13,7 +13,6 @@ import {
 import LocalSearchbar from "../shared/search/LocalSearchbar"
 
 import { Country } from "@/types"
-import { formUrlQuery } from "@/lib/utils"
 
 interface JobFilterProps {
   countriesList: Country[]
@@ -22,16 +21,15 @@ interface JobFilterProps {
 const JobFilter = ({countriesList}:JobFilterProps) => {
   const pathname = usePathname()
   const router = useRouter()
-  const searchparams = useSearchParams()
+  const searchParams = useSearchParams()
 
   function handleUpdateParams(value:string){
-    const newUrl = formUrlQuery({
-      params: searchparams.toString(),
-      key: "location",
-      value
-    })
+    const currentParams = new URLSearchParams(searchParams)
 
-    router.push(newUrl, {scroll:false})
+    currentParams.set("location", value)
+
+    router.replace(`${pathname}?${currentParams.toString()}`)
+    
   }
   return (
     <div className="relative mt-11 flex w-full justify-between gap-5 max-sm:flex-col sm:items-center">

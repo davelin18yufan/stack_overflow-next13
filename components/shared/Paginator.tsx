@@ -1,8 +1,7 @@
 "use client"
 
 import { Button } from "../ui/button"
-import { useRouter, useSearchParams } from "next/navigation"
-import { formUrlQuery } from "@/lib/utils"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 interface Props {
   pageNumber: number
@@ -11,19 +10,17 @@ interface Props {
 
 const Paginator = ({ pageNumber, hasNextPage }: Props) => {
   const router = useRouter()
+  const pathname= usePathname()
   const searchParams = useSearchParams()
 
   function handleNavigation(direction: string) {
     const nextPageNumber =
       direction === "prev" ? pageNumber - 1 : pageNumber + 1
+    const currentParams = new URLSearchParams(searchParams)
 
-    const newUrl = formUrlQuery({
-      params: searchParams.toString(),
-      key: "page",
-      value: nextPageNumber.toString(),
-    })
+    currentParams.set("page", nextPageNumber.toString())
 
-    router.push(newUrl)
+    router.replace(`${pathname}?${currentParams.toString()}`)
   }
   
   // not enough for one page 

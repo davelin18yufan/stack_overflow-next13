@@ -2,36 +2,27 @@
 import { HomePageFilters } from "@/constants/filters"
 import React, { useState } from "react"
 import { Button } from "../ui/button"
-import { formUrlQuery } from "@/lib/utils"
-import { useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 const HomeFilters = () => {
-  const searchPrarams = useSearchParams()
+  const searchParams = useSearchParams()
+  const pathname= usePathname()
   const router = useRouter()
   const [active, setActive] = useState("")
 
   function handleClick(value: string) {
+    const currentParams = new URLSearchParams(searchParams)
     if (active === value) {
       // no filter
       setActive("")
 
-      const newUrl = formUrlQuery({
-        params: searchPrarams.toString(),
-        key: "filter",
-        value: null,
-      })
-      router.push(newUrl, { scroll: false })
+      currentParams.delete("filter")
     } else {
       setActive(value)
 
-      const newUrl = formUrlQuery({
-        params: searchPrarams.toString(),
-        key: "filter",
-        value: value.toLowerCase(),
-      })
-
-      router.push(newUrl, { scroll: false })
+      currentParams.set("filter", value.toLowerCase())
     }
+    router.replace(`${pathname}?${currentParams.toString()}`)
   }
 
   return (

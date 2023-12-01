@@ -1,8 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import qs from "query-string"
 import { BADGE_CRITERIA } from "@/constants"
-import { BadgeCounts, BadgeCriteriaType } from "@/types"
+import { BadgeCounts } from "@/types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -59,47 +58,6 @@ export const getJoinedDate = (date: Date): string => {
   const joinedDate = `${month} ${year}`
 
   return joinedDate
-}
-
-interface UrlQueryParams {
-  params: string
-  key: string
-  value: string | null
-}
-
-interface RemoveUrkQueryParams {
-  params: string
-  keysToRemove: string[]
-}
-
-// update target query-string key
-export function formUrlQuery({ params, key, value }: UrlQueryParams) {
-  const currentParams = qs.parse(params) // obj  
-
-  currentParams[key] = value
-
-  return qs.stringifyUrl(
-    {
-      url: window.location.pathname,
-      query: currentParams,
-    },
-    { skipNull: true }
-  )
-}
-
-// remove all keys
-export function removeKeysFromQuery({ params, keysToRemove }: RemoveUrkQueryParams) {
-  const currentParams = qs.parse(params) // obj
-
-  keysToRemove.forEach((key) => delete currentParams[key])
-
-  return qs.stringifyUrl(
-    {
-      url: window.location.pathname,
-      query: currentParams,
-    },
-    { skipNull: true }
-  )
 }
 
 interface BadgeParams{

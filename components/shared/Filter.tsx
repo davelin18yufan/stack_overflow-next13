@@ -9,8 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {  useRouter, useSearchParams } from "next/navigation"
-import { formUrlQuery } from "@/lib/utils"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 interface FilterProps {
   filters: {
@@ -23,18 +22,17 @@ interface FilterProps {
 
 const Filter = ({ filters, otherClasses, containerClasses }: FilterProps) => {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   const paramFilter = searchParams.get("filter")
 
   // if the value changed, update query-string
   function handleUpdateParams(value: string){
-    const newUrl = formUrlQuery({
-      params: searchParams.toString(),
-      key: "filter",
-      value
-    })
+    const currentParams = new URLSearchParams(searchParams)
 
-    router.push(newUrl, { scroll: false })
+    currentParams.set("filter", value)
+
+    router.replace(`${pathname}?${currentParams.toString()}`)
   }
   return (
     <div className={`relative ${containerClasses}`}>

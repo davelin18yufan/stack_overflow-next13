@@ -3,40 +3,31 @@
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { GlobalSearchFilters } from "@/constants/filters"
-import { useRouter, useSearchParams } from "next/navigation"
-import { formUrlQuery } from "@/lib/utils"
+import { useRouter, useSearchParams, usePathname } from "next/navigation"
 
 const GlobalFilter = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   const typeParams = searchParams.get("type")
   const [active, setActive] = useState(typeParams || "")
 
   function handleTypeClick(type: string) {
+    const currentParams = new URLSearchParams(searchParams)
     if (active === type) {
       // click the activated tag => clear filter
       setActive("")
 
-      const newUrl = formUrlQuery({
-        params: searchParams.toString(),
-        key: "type",
-        value: null,
-      })
-
-      router.push(newUrl, { scroll: false })
+      currentParams.delete("type")
     } else {
       // activate tag
       setActive(type)
 
-      const newUrl = formUrlQuery({
-        params: searchParams.toString(),
-        key: "type",
-        value: type.toLowerCase(),
-      })
-
-      router.push(newUrl, { scroll: false })
+      currentParams.set("type", type.toLowerCase())
     }
+    router.replace(`${pathname}?${currentParams.toString()}`)
+
   }
 
   return (
