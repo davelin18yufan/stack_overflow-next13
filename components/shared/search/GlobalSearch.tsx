@@ -4,14 +4,13 @@ import React, { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils"
 import GlobalResult from "./GlobalResult"
 
 const GlobalSearch = () => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const query = searchParams.get("q") // local search value
+  const query = searchParams.get("q")?.toString() // local search value
 
   const [search, setSearch] = useState(query || "")
   const [isOpen, setIsOpen] = useState(false)
@@ -19,40 +18,34 @@ const GlobalSearch = () => {
 
   useEffect(() => {
     // click outside global search -> close and rest
-    const handleOutsideClick = (e:any) => {
-      // @ts-ignore
-      if(searchContainerRef.current && !searchContainerRef.current.contains(e.target)){
+    const handleOutsideClick = (e: any) => {
+      if (
+        // @ts-ignore
+        searchContainerRef.current && !searchContainerRef.current.contains(e.target)
+      ) {
         setIsOpen(false)
-        setSearch('')
+        setSearch("")
       }
     }
 
     setIsOpen(false) // if path changes -> close
 
-    document.addEventListener('click', handleOutsideClick)
+    document.addEventListener("click", handleOutsideClick)
 
-    return () => document.removeEventListener('click', handleOutsideClick)
+    return () => document.removeEventListener("click", handleOutsideClick)
   }, [pathname])
 
   useEffect(() => {
     const delayDebouncedFn = setTimeout(() => {
+      const currentParams = new URLSearchParams(searchParams)
       if (search) {
-        const newUrl = formUrlQuery({
-          params: searchParams.toString(),
-          key: "global",
-          value: search,
-        })
-        router.push(newUrl, { scroll: false })
+        currentParams.set("global", search)
       } else {
         // clear query of searchParams
-        if (query) {
-          const newUrl = removeKeysFromQuery({
-            params: searchParams.toString(),
-            keysToRemove: ["q", "type"],
-          })
-          router.push(newUrl, { scroll: false })
-        }
+        currentParams.delete("global")
+        currentParams.delete("type")
       }
+      router.replace(`${pathname}?${currentParams.toString()}`)
     }, 300)
 
     return () => clearTimeout(delayDebouncedFn)
@@ -75,6 +68,7 @@ const GlobalSearch = () => {
         <Input
           type="text"
           placeholder="Search globally"
+          //defaultValue={query}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value)
