@@ -13,6 +13,7 @@ import Stats from "@/components/shared/Stats"
 import QuestionTab from "@/components/shared/QuestionTab"
 import AnswersTab from "@/components/shared/AnswersTab"
 import { Metadata, ResolvingMetadata } from "next"
+import { redirect } from "next/navigation"
 
 export async function generateMetadata(
   { params }: { params: { id: string } },
@@ -31,6 +32,7 @@ export async function generateMetadata(
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth()
+  if(!clerkId) redirect("/login")
   const userInfo = await getUserInfo({ userId: params.id })
 
   return (
