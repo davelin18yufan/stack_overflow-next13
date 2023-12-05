@@ -56,4 +56,4 @@ While it is recommended to sign up with your own account, if you prefer not to u
 ## Technological Proficiency
 Demonstrated expertise in *Next14*, ensuring the development of a robust, scalable, and cutting-edge application.
 
-**🚀 Welcome! Feel free to provide feedback, suggestions, or ask any questions. We appreciate your input! 🌟**
+**🚀 Welcome! Feel free to provide feedback, suggestions, or ask any questions. I appreciate your input! 🌟**
