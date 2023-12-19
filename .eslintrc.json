@@ -3,6 +3,8 @@
     "next/core-web-vitals",
     "standard",
     "plugin:tailwindcss/recommended",
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended",
     "prettier"
   ],
   "semi": "off"

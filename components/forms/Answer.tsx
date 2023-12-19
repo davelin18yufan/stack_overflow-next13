@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react"
 import {
   Form,
   FormControl,
+  FormLabel,
   FormField,
   FormItem,
   FormMessage,
@@ -115,6 +116,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
           onClick={generateAiAnswer}
+          data-testid='AIBtn'
         >
           {isSubmittingAi ? (
             <>Generating...</>
@@ -136,14 +138,17 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         <form
           className="mt-6 flex w-full flex-col gap-10"
           onSubmit={form.handleSubmit(handleCreateAnswer)}
+          data-testid="form"
         >
           <FormField
             control={form.control}
             name="answer"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-3">
+                <FormLabel>Answer</FormLabel>
                 <FormControl className="mt-3.5">
                   <Editor
+                    data-testid="editor"
                     disabled={isSubmittingAi}
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     onInit={(evt, editor) => {

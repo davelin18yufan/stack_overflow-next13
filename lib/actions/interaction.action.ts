@@ -4,6 +4,7 @@ import { ViewQuestionParams } from "@/types/shared"
 import { connectToDatabase } from "../mongoose"
 import Question from "@/database/question.model"
 import Interaction from "@/database/interaction.model"
+import Tag from "@/database/tag.model"
 
 export async function viewQuestion(params: ViewQuestionParams) {
   try {
@@ -11,7 +12,11 @@ export async function viewQuestion(params: ViewQuestionParams) {
 
     const { userId, questionId } = params
 
-    const question = await Question.findById(questionId).populate("tags", "_id")
+    const question = await Question.findById(questionId).populate({
+      path: "tags",
+      model: Tag,
+      select: "_id",
+    })
 
     // Update view count for the question
     await Question.findByIdAndUpdate(questionId, {
