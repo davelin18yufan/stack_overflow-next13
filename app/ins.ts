@@ -1,8 +1,6 @@
 /**
  * @jest-environment jsdom
  */
-import { render, screen } from "@testing-library/react"
-import "@testing-library/jest-dom"
 
 // Unit of Work： 你的工作單位，像是 function, class, component 等
 // Scenario： 我們要測試的情境，通常會以 when 開頭，若沒有特殊條件，可以用 by default, always 表示預設情境
