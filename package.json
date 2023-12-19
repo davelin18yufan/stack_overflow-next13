@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
-    "test:coverage": "npm run test -- --coverage"
+    "test:coverage": "npm run test -- --coverage",
+    "test:current": "jest --testPathPattern='$(dirname \"$0\")'"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.27.1",
