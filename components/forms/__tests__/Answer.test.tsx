@@ -10,19 +10,6 @@ jest.mock("@/lib/actions/answer.action")
 jest.mock("next/navigation")
 jest.mock("@/components/ui/use-toast")
 
-// mocking matchMedia
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  value: jest.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-})
-
 // mock fetch
 global.fetch = jest
   .fn()
