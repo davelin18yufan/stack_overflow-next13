@@ -55,7 +55,6 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof QuestionSchema>) {
     setIsSubmitting(true)
-
     try {
       if (type === "Edit") {
         await editQuestion({
@@ -139,7 +138,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
           name="title"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel className="paragraph-semibold text-dark400_light800">
+              <FormLabel className="paragraph-semibold text-dark400_light800" data-testid="name">
                 Question Title<span className="text-primary-500">*</span>
               </FormLabel>
 
@@ -165,7 +164,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
           name="explanation"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="paragraph-semibold text-dark400_light800">
+              <FormLabel className="paragraph-semibold text-dark400_light800" data-testid="description">
                 Detail explanation of your question?
                 <span className="text-primary-500">*</span>
               </FormLabel>
@@ -181,6 +180,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
                   onEditorChange={(content) => field.onChange(content)}
                   initialValue={parseQuestionDetails?.content}
                   init={{
+                    placeholder: 'description..',
                     height: 350,
                     menubar: false,
                     plugins: [
