@@ -82,7 +82,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
         })
       }
     } catch (error) {
-      console.log(error)
+      throw(error)
     } finally {
       setIsSubmitting(false)
     }
@@ -138,7 +138,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
           name="title"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel className="paragraph-semibold text-dark400_light800" data-testid="name">
+              <FormLabel className="paragraph-semibold text-dark400_light800">
                 Question Title<span className="text-primary-500">*</span>
               </FormLabel>
 
@@ -146,6 +146,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
                 <Input
                   {...field}
                   className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                  data-testid="name"
                 />
               </FormControl>
 
@@ -164,7 +165,10 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
           name="explanation"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="paragraph-semibold text-dark400_light800" data-testid="description">
+              <FormLabel
+                className="paragraph-semibold text-dark400_light800"
+                data-testid="description"
+              >
                 Detail explanation of your question?
                 <span className="text-primary-500">*</span>
               </FormLabel>
@@ -180,7 +184,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
                   onEditorChange={(content) => field.onChange(content)}
                   initialValue={parseQuestionDetails?.content}
                   init={{
-                    placeholder: 'description..',
+                    placeholder: "description..",
                     height: 350,
                     menubar: false,
                     plugins: [
@@ -269,7 +273,8 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
 
               <FormDescription className="body-regular mt-2.5 text-light-500">
                 Add up to 3 tags to describe what your question is about. You
-                need to press <b className='capitalize font-bold'>'enter'</b> to add a tag.
+                need to press <b className="capitalize font-bold">'enter'</b> to
+                add a tag.
               </FormDescription>
 
               {/* error msg */}
