@@ -1,19 +1,24 @@
-import { screen } from "@testing-library/react"
+import { screen, waitFor } from "@testing-library/react"
 import { render } from "@/test/utils"
 import Answer from "../Answer"
 import userEvent from "@testing-library/user-event"
+import { toast } from "@/components/ui/use-toast"
+import { ToastAction } from "@/components/ui/toast"
 import { createAnswer } from "@/lib/actions/answer.action"
 import { usePathname } from "next/navigation"
-import { toast } from "@/components/ui/use-toast"
 
 jest.mock("@/lib/actions/answer.action")
-jest.mock("next/navigation")
+jest.mock("next/navigation", () => ({
+  usePathname: () => "/mocked-path",
+}))
 jest.mock("@/components/ui/use-toast")
 
 // mock fetch
-global.fetch = jest
-  .fn()
-  .mockResolvedValue({ json: () => ({ reply: "Mocked AI answer" }) })
+global.fetch = jest.fn().mockResolvedValue({
+  json: () => ({
+    reply: "Mocked AI answer",
+  }),
+})
 
 const mockProp = {
   question: "testing",
@@ -65,7 +70,7 @@ describe("Interaction", () => {
     expect(msg).toBeInTheDocument()
   })
 
-  it("Should call openAi API and generate answer", async () => {
+  it("Should call openAi API, generate answer and create an new answer", async () => {
     render(
       <Answer
         question={mockProp.question}
@@ -76,7 +81,6 @@ describe("Interaction", () => {
 
     const aiBtn = screen.getByTestId("AIBtn")
     await user.click(aiBtn)
-
     expect(fetch).toHaveBeenCalledWith(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
       {
@@ -84,15 +88,10 @@ describe("Interaction", () => {
         body: JSON.stringify({ question: mockProp.question }),
       }
     )
-  })
-
-  it("Should generate answer after calling createAnswer function", async () => {
-    render(
-      <Answer
-        question={mockProp.question}
-        questionId={mockProp.questionId}
-        authorId={mockProp.authorId}
-      />
-    )
+    expect(toast).toHaveBeenCalledWith({
+      title: "AI answer generate successfully",
+      description: "Go check the result",
+      action: <ToastAction altText="Got it!">Got it!</ToastAction>,
+    })
   })
 })
