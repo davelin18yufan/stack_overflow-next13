@@ -1,5 +1,5 @@
 import Profile from "../Profile"
-import { render, screen, waitFor } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 import { updateUser } from "@/lib/actions/user.action"
 import { toast } from "@/components/ui/use-toast"

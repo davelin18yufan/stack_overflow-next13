@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react"
+import { screen } from "@testing-library/react"
+import { render } from "@/test/utils"
 import Answer from "../Answer"
-import { ThemeProvider } from "@/context/ThemeProvider"
 import userEvent from "@testing-library/user-event"
 import { createAnswer } from "@/lib/actions/answer.action"
 import { usePathname } from "next/navigation"
@@ -29,13 +29,11 @@ describe("Render", () => {
 
   it("should render editor, submit button and generate AI button", () => {
     render(
-      <ThemeProvider>
-        <Answer
-          question={mockProp.question}
-          questionId={mockProp.questionId}
-          authorId={mockProp.authorId}
-        />
-      </ThemeProvider>
+      <Answer
+        question={mockProp.question}
+        questionId={mockProp.questionId}
+        authorId={mockProp.authorId}
+      />
     )
 
     const form = screen.getByTestId("form")
@@ -53,13 +51,11 @@ describe("Interaction", () => {
 
   it("Should alert if input not valid", async () => {
     render(
-      <ThemeProvider>
-        <Answer
-          question={mockProp.question}
-          questionId={mockProp.questionId}
-          authorId={mockProp.authorId}
-        />
-      </ThemeProvider>
+      <Answer
+        question={mockProp.question}
+        questionId={mockProp.questionId}
+        authorId={mockProp.authorId}
+      />
     )
 
     const btn = screen.getByRole("button", { name: "Submit" })
@@ -71,13 +67,11 @@ describe("Interaction", () => {
 
   it("Should call openAi API and generate answer", async () => {
     render(
-      <ThemeProvider>
-        <Answer
-          question={mockProp.question}
-          questionId={mockProp.questionId}
-          authorId={mockProp.authorId}
-        />
-      </ThemeProvider>
+      <Answer
+        question={mockProp.question}
+        questionId={mockProp.questionId}
+        authorId={mockProp.authorId}
+      />
     )
 
     const aiBtn = screen.getByTestId("AIBtn")
@@ -94,15 +88,11 @@ describe("Interaction", () => {
 
   it("Should generate answer after calling createAnswer function", async () => {
     render(
-      <ThemeProvider>
-        <Answer
-          question={mockProp.question}
-          questionId={mockProp.questionId}
-          authorId={mockProp.authorId}
-        />
-      </ThemeProvider>
+      <Answer
+        question={mockProp.question}
+        questionId={mockProp.questionId}
+        authorId={mockProp.authorId}
+      />
     )
-
-      
   })
 })

@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from "@testing-library/react"
+import { screen, waitFor } from "@testing-library/react"
+import { render } from "@/test/utils"
 import { userEvent } from "@testing-library/user-event"
 import Question from "../Question"
-import { ThemeProvider } from "@/context/ThemeProvider"
 import { createQuestion, editQuestion } from "@/lib/actions/question.action"
 
 const mockUsePathname = jest.fn()
@@ -17,7 +17,7 @@ jest.mock("next/navigation", () => ({
 jest.mock("@/lib/actions/question.action")
 
 const mockQuestion = JSON.stringify({
-  _id: '123',
+  _id: "123",
   title: "render test",
   content:
     "mock content for tiny MCU and fill the content for at least 100 words.., expect this will render on screen at first render, if there is approach to mock behavior of this third-party package, replace this with that.",
@@ -26,11 +26,7 @@ const mockQuestion = JSON.stringify({
 
 describe("Render", () => {
   it("Should render form correctly if creating a post", () => {
-    render(
-      <ThemeProvider>
-        <Question type="Create" mongoUserId="test" />
-      </ThemeProvider>
-    )
+    render(<Question type="Create" mongoUserId="test" />)
 
     expect(screen.getByTestId("name")).toBeInTheDocument()
     expect(screen.getByTestId("description")).toBeInTheDocument()
@@ -40,13 +36,7 @@ describe("Render", () => {
 
   it("Should render form correctly if edit a post", () => {
     render(
-      <ThemeProvider>
-        <Question
-          type="Edit"
-          mongoUserId="test"
-          questionDetails={mockQuestion}
-        />
-      </ThemeProvider>
+      <Question type="Edit" mongoUserId="test" questionDetails={mockQuestion} />
     )
 
     expect(screen.getByDisplayValue(/render test/i)).toBeInTheDocument()
@@ -60,11 +50,7 @@ describe("Interaction", () => {
   mockUsePathname.mockImplementation(() => "/mocked-path")
 
   it("Should add tag after press enter and remove tag after click", async () => {
-    render(
-      <ThemeProvider>
-        <Question type="Create" mongoUserId="test" />
-      </ThemeProvider>
-    )
+    render(<Question type="Create" mongoUserId="test" />)
 
     const tagInput = screen.getByPlaceholderText(/Add tags.../i)
 
@@ -90,13 +76,7 @@ describe("Interaction", () => {
       tags: [],
     })
     render(
-      <ThemeProvider>
-        <Question
-          type="Create"
-          mongoUserId="123"
-          questionDetails={mockContent}
-        />
-      </ThemeProvider>
+      <Question type="Create" mongoUserId="123" questionDetails={mockContent} />
     )
 
     const nameInput = screen.getByTestId("name")
@@ -124,13 +104,7 @@ describe("Interaction", () => {
 
   it("Should call editQuestion after press edit button", async () => {
     render(
-      <ThemeProvider>
-        <Question
-          type="Edit"
-          mongoUserId="test"
-          questionDetails={mockQuestion}
-        />
-      </ThemeProvider>
+      <Question type="Edit" mongoUserId="test" questionDetails={mockQuestion} />
     )
 
     const nameInput = screen.getByTestId("name")
@@ -147,7 +121,7 @@ describe("Interaction", () => {
       title: "Edit title",
       content:
         "mock content for tiny MCU and fill the content for at least 100 words.., expect this will render on screen at first render, if there is approach to mock behavior of this third-party package, replace this with that.",
-      path: '/mocked-path',
+      path: "/mocked-path",
     })
   })
 })
