@@ -3,10 +3,11 @@ import HomeFilters from "../HomeFilters"
 import { userEvent } from "@testing-library/user-event"
 import { useRouter } from "next/navigation"
 
+// initialize variables to track and spyOn
 const replaceMock = jest.fn()
 const searchParams = new URLSearchParams()
 jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(() => ({ replace: replaceMock })),
+  useRouter: jest.fn(() => ({ replace: replaceMock })), // if using jest.fn() here< it would be anonymous which can't be tracked
   usePathname: () => "/mocked-path",
   useSearchParams: () => searchParams,
 }))
