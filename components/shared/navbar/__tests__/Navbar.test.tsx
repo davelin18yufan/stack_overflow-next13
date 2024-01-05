@@ -1,9 +1,9 @@
 import { screen, waitFor } from "@testing-library/react";
 import { render } from "@/test/utils";
 import { userEvent } from "@testing-library/user-event";
-import MobileNav from "../navbar/MobileNav";
-import Navbar from "../navbar/Navbar";
-import Theme from "../navbar/Theme";
+import MobileNav from "../MobileNav";
+import Navbar from "../Navbar";
+import Theme from "../Theme";
 import { useRouter } from "next/navigation"
 
 const pushMock = jest.fn()
