@@ -34,7 +34,7 @@ const LocalSearchbar = ({
     const delayDebounceFn = setTimeout(() => {
       const currentParams = new URLSearchParams(searchParams)
       if (search) {
-        currentParams.set("q", search)  
+        currentParams.set("q", search)
       } else {
         // if input is cleared
         if (pathname === route) {
