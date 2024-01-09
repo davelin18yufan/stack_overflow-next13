@@ -73,7 +73,6 @@ describe("Theme", () => {
     
     expect(screen.getByAltText('sun')).toBeInTheDocument()
     await userEvent.click(screen.getByAltText("sun"))
-    screen.debug()
 
     expect(screen.getByAltText("light")).toBeInTheDocument()
     expect(screen.getByAltText("dark")).toBeInTheDocument()
