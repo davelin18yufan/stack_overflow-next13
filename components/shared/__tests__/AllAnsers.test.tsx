@@ -1,7 +1,6 @@
-import { render, screen, waitFor, act } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import AllAnswers from "../AllAnswers"
 import { getAnswers } from "@/lib/actions/answer.action"
-import ReactDOMServer from "react-dom/server"
 
 const mockProp = {
   questionId: "123",
