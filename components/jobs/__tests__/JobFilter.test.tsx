@@ -36,12 +36,12 @@ describe("JobFilter", () => {
   it("Should call useRouter with correct params after selection", async () => {
     render(<JobFilter countriesList={mockProp} />)
 
-    const select = screen.getByTestId('select')
+    fireEvent.click(screen.getByText("Select Location"))
 
-    // await user.selectOptions(screen.getByText('Select Location'), 'Taiwan')
+    waitFor(async () => {
+      fireEvent.click(screen.getByText("Taiwan"))
+      expect(replaceMock).toHaveBeenCalledWith('/mocked-path?location=Taiwan')
+    })
 
-    // await waitFor(() => {
-    //   expect(replaceMock).toHaveBeenCalledWith('/mocked-path?location=Taiwan')
-    // })
   })
 })
