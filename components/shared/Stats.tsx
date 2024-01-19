@@ -1,7 +1,7 @@
-import { formatNumber } from '@/lib/utils'
-import { BadgeCounts } from '@/types'
-import Image from 'next/image'
-import React from 'react'
+import { formatNumber } from "@/lib/utils"
+import { BadgeCounts } from "@/types"
+import Image from "next/image"
+import React from "react"
 
 interface StatesCardProps {
   imgUrl: string
@@ -9,7 +9,7 @@ interface StatesCardProps {
   title: string
 }
 
-const StatsCard = ({imgUrl, value, title}: StatesCardProps) => {
+const StatsCard = ({ imgUrl, value, title }: StatesCardProps) => {
   return (
     <div className="background-light900_dark300 flex flex-wrap gap-3.5 px-6 py-5 rounded-md items-center justify-start light-border border shadow-light-300 dark:shadow-dark-200">
       <Image src={imgUrl} alt={title} width={40} height={50} className="" />
@@ -28,10 +28,12 @@ interface Props {
   reputation: number
 }
 
-const Stats = ({totalQuestions, totalAnswers, badges, reputation}:Props) => {
+const Stats = ({ totalQuestions, totalAnswers, badges, reputation }: Props) => {
   return (
     <div className="mt-10">
-      <h4 className="h3-semibold text-dark200-light900">Stats - {reputation}</h4>
+      <h4 className="h3-semibold text-dark200-light900">
+        Stats - {reputation}
+      </h4>
 
       <div className="mt-5 grid grid-cols-1 gap-5 xs:grid-cols-2 md:grid-cols-4">
         <div className="background-light900_dark300 flex flex-wrap p-6 gap-4 rounded-md items-center justify-evenly light-border border shadow-light-300 dark:shadow-dark-200">
