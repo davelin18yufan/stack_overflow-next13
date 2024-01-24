@@ -26,7 +26,6 @@ describe("LeftSideBar", () => {
 
   it("Should navigate to right path after click", async () => {
     render(<LeftSidebar />)
-    screen.debug()
 
     await user.click(screen.getByText('Profile'))
 

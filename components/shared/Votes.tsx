@@ -54,7 +54,7 @@ const Votes = ({
 
     return toast({
       title: `Question ${
-        hasSaved ? "Saved in" : "Removed from"
+        hasSaved ? "Removed from" : "Saved in"
       } your collections`,
       variant: `${hasSaved ? "default" : "destructive"}`,
     })

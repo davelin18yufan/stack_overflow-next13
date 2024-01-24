@@ -84,7 +84,10 @@ describe("Question Votes", () => {
 
     expect(screen.getByText("13")).toBeInTheDocument()
     expect(screen.getByAltText("star icon")).toBeInTheDocument()
-    expect(screen.getByAltText("star icon")).toHaveAttribute('src', '/assets/icons/star-red.svg')
+    expect(screen.getByAltText("star icon")).toHaveAttribute(
+      "src",
+      "/assets/icons/star-red.svg"
+    )
   })
 
   it("Should perform upVote and downVote function", async () => {
@@ -137,7 +140,7 @@ describe("Question Votes", () => {
     })
     expect(toast).toHaveBeenCalledWith({
       title: `Question ${
-        hasSaved ? "Saved in" : "Removed from"
+        hasSaved ? "Removed from" : "Saved in"
       } your collections`,
       variant: `${hasSaved ? "default" : "destructive"}`,
     })
@@ -158,9 +161,9 @@ describe("Answer Votes", () => {
   const { itemId, userId, hasUpVoted, hasDownVoted } = mockProp
   const user = userEvent.setup()
   it("Should not render save icon", () => {
-    render(<Votes {...mockProp}/>)
+    render(<Votes {...mockProp} />)
     // query => prevent throw error
-    expect(screen.queryByAltText('star icon')).not.toBeInTheDocument()
+    expect(screen.queryByAltText("star icon")).not.toBeInTheDocument()
   })
 
   it("Should call up-vote and down-vote answer", async () => {

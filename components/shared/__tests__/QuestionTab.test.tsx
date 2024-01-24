@@ -8,6 +8,7 @@ jest.mock("@/lib/actions/user.action", () => ({
 jest.mock("@/components/shared/Metric")
 jest.mock("@clerk/nextjs")
 jest.mock("next/navigation")
+jest.mock("../Paginator.tsx")
 
 const mockProp = {
   searchParams: { page: "1" },

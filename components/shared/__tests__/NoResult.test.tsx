@@ -78,7 +78,6 @@ describe("NoResult", () => {
     )
 
     await user.click(screen.getByRole('button', {name: linkTitle}))
-      screen.debug()
     waitFor(() => {
       expect(useRouter().push).toHaveBeenCalledWith(linkTitle)
     })

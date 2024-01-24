@@ -7,6 +7,7 @@ jest.mock("@/lib/actions/general.action", () => ({
   globalSearch: jest.fn(),
 }))
 const mockSearchParamsResult = new URLSearchParams("global=test&type=question")
+const mockSearchParamsResultAnswer = new URLSearchParams("global=test&type=answer")
 const mockSearchParams = new URLSearchParams()
 
 const mockReplace = jest.fn()
@@ -29,8 +30,8 @@ describe("GlobalResult", () => {
     expect(screen.getByRole("button", { name: "User" })).toBeInTheDocument()
   })
 
-  it("Should render data when results are available", async () => {
-    ;(useSearchParams as jest.Mock).mockReturnValue(mockSearchParamsResult)
+  it("Should render data when question results are available", async () => {
+    ;(useSearchParams as jest.Mock).mockReturnValueOnce(mockSearchParamsResult)
     ;(globalSearch as jest.Mock).mockResolvedValueOnce(
       '[{"type":"question", "id": 1, "title": "Test Question"}]'
     )
@@ -44,6 +45,24 @@ describe("GlobalResult", () => {
     // promise resolved
     await waitFor(() => {
       expect(screen.getByText("Test Question")).toBeInTheDocument()
+    })
+  })
+
+  it("Should render data when answer results are available", async () => {
+    ;(useSearchParams as jest.Mock).mockReturnValueOnce(mockSearchParamsResultAnswer)
+    ;(globalSearch as jest.Mock).mockResolvedValueOnce(
+      '[{"type":"answer", "id": 1, "title": "Test Answer"}]'
+    )
+    render(<GlobalResult />)
+
+    // loading state
+    expect(
+      screen.getByText(/Browsing the entire database/i)
+    ).toBeInTheDocument()
+
+    // promise resolved
+    await waitFor(() => {
+      expect(screen.getByText("Test Answer")).toBeInTheDocument()
     })
   })
 

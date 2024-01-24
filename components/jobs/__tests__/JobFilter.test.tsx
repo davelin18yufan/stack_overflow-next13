@@ -1,5 +1,4 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react"
-import { userEvent } from "@testing-library/user-event"
 import JobFilter from "../JobFilter"
 
 const replaceMock = jest.fn()
@@ -25,7 +24,6 @@ const mockProp = [
   },
 ]
 describe("JobFilter", () => {
-  const user = userEvent.setup()
   it("Should render correct data", async () => {
     render(<JobFilter countriesList={mockProp}/>)
     

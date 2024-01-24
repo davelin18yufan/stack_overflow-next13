@@ -134,7 +134,6 @@ describe("LocalSearchBar", () => {
 
     // Wait for the debounce timeout
     await act(async () => { // act assure every async operations being wrapped inside finished
-      jest.runAllTimers() // run all pending timers
       await waitFor(() => {
         expect(mockRouter.replace).toHaveBeenCalledWith("/mocked-path?q=test")
       })
