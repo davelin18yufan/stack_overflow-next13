@@ -24,7 +24,7 @@ interface Props {
   hasSaved?: boolean
 }
 
-const Votes = async ({
+const Votes = ({
   itemId,
   userId,
   type,

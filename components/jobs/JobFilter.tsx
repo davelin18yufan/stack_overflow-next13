@@ -40,7 +40,7 @@ const JobFilter = ({countriesList}:JobFilterProps) => {
         placeholder="Job Title, Company, or Keywords"
         otherClasses="flex-1 max-sm:w-full"
       />
-
+      <div data-testid='select'>
       <Select onValueChange={(value) => handleUpdateParams(value)}>
         <SelectTrigger className="body-regular light-border background-light800_dark300 text-dark500_light700 line-clamp-1 flex min-h-[56px] items-center gap-3 border p-4 sm:max-w-[210px]">
           <Image
@@ -54,14 +54,16 @@ const JobFilter = ({countriesList}:JobFilterProps) => {
           </div>
         </SelectTrigger>
 
-        <SelectContent className="body-semibold max-h-[350px] max-w-[250px] background-light800_dark300">
+        <SelectContent
+          className="body-semibold max-h-[350px] max-w-[250px] background-light800_dark300"
+        >
           <SelectGroup>
             {countriesList ? (
               countriesList.map((country: Country) => (
                 <SelectItem
                   key={country.name.common}
                   value={country.name.common}
-                  className="px-4 py-3"
+                  className="px-4 py-3 selectItem"
                 >
                   {country.name.common}
                 </SelectItem>
@@ -72,6 +74,7 @@ const JobFilter = ({countriesList}:JobFilterProps) => {
           </SelectGroup>
         </SelectContent>
       </Select>
+      </div>
     </div>
   )
 }

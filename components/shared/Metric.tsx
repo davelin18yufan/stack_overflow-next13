@@ -1,6 +1,8 @@
+"use client"
+
 import Image from "next/image"
-import Link from "next/link"
 import React from "react"
+import { useRouter } from "next/navigation"
 
 interface MetricProps {
   imgUrl: string
@@ -44,12 +46,13 @@ const Metric = ({
       </p>
     </>
   )
+  const router = useRouter()
 
   if(href) {
     return (
-      <Link href={href} className="flex-center gap-1">
+      <div onClick={() => router.push(href)} className="flex-center gap-1">
         {metricContent}
-      </Link>
+      </div>
     )
   }
 

@@ -42,9 +42,9 @@ const Profile = ({ clerkId, user }: Props) => {
     },
   })
 
-   async function onSubmit(values: z.infer<typeof ProfileSchema>) {
+  async function onSubmit(values: z.infer<typeof ProfileSchema>) {
     setIsSubmitting(true)
-    
+
     try {
       await updateUser({
         clerkId,
@@ -53,19 +53,19 @@ const Profile = ({ clerkId, user }: Props) => {
           username: values.username,
           portfolioWebsite: values.portfolioWebsite,
           location: values.location,
-          bio: values.bio
+          bio: values.bio,
         },
-        path: pathname
+        path: pathname,
       })
 
       router.back()
 
       toast({
-        title: "Profile edit successfully"
+        title: "Profile edit successfully",
       })
     } catch (error) {
       console.log(error)
-    }finally{
+    } finally {
       setIsSubmitting(false)
     }
   }
@@ -76,6 +76,7 @@ const Profile = ({ clerkId, user }: Props) => {
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex w-full flex-col gap-9 mt-9"
+          data-testid="form"
         >
           <FormField
             control={form.control}
@@ -132,14 +133,12 @@ const Profile = ({ clerkId, user }: Props) => {
 
                 {/* FormControl only accept single child Element */}
                 <FormControl className="mt-3.5">
-                  <>
-                    <Input
-                      type="url"
-                      className="no-focus paragraph-regular background-lught800-dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                      placeholder="Your portfolio URL"
-                      {...field}
-                    />
-                  </>
+                  <Input
+                    type="url"
+                    className="no-focus paragraph-regular background-lught800-dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                    placeholder="Your portfolio URL"
+                    {...field}
+                  />
                 </FormControl>
 
                 {/* error msg */}
@@ -158,13 +157,11 @@ const Profile = ({ clerkId, user }: Props) => {
 
                 {/* FormControl only accept single child Element */}
                 <FormControl className="mt-3.5">
-                  <>
-                    <Input
-                      className="no-focus paragraph-regular background-lught800-dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                      placeholder="Where are you from"
-                      {...field}
-                    />
-                  </>
+                  <Input
+                    className="no-focus paragraph-regular background-lught800-dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                    placeholder="Where are you from"
+                    {...field}
+                  />
                 </FormControl>
 
                 {/* error msg */}
@@ -183,13 +180,11 @@ const Profile = ({ clerkId, user }: Props) => {
 
                 {/* FormControl only accept single child Element */}
                 <FormControl className="mt-3.5">
-                  <>
-                    <Textarea
-                      className="no-focus paragraph-regular background-lught800-dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                      placeholder="What's special about you?"
-                      {...field}
-                    />
-                  </>
+                  <Textarea
+                    className="no-focus paragraph-regular background-lught800-dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                    placeholder="What's special about you?"
+                    {...field}
+                  />
                 </FormControl>
 
                 {/* error msg */}
